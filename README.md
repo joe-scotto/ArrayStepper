@@ -1,3 +1,2 @@
 # ArrayStepper
-
-A description of this package.
+A simple SwiftUI component for stepping through the contents of an array.
