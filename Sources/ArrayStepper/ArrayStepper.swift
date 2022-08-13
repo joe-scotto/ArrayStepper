@@ -39,12 +39,12 @@ public struct ArrayStepper<T: Equatable>: View {
             
             VStack {
 //                Text(aperture.value)
-//                Text("\(selected as! String)")
-                if let use = use {
-                    Text(selected[keyPath: use])
-                } else {
-                    Text(selected as! String)
-                }
+////                Text("\(selected as! String)")
+//                if let use = use {
+//                    Text(selected[keyPath: use])
+//                } else {
+                    Text(String(describing: selected))
+//                }
                 
                 Text(label)//.textFieldStepperLabel()
             }
@@ -122,5 +122,21 @@ public struct ArrayStepper<T: Equatable>: View {
     func invalidateLongPress() {
         isLongPressing = false
         timer?.invalidate()
+    }
+    
+    func convertToString(_ input: T) -> String {
+        if let string = selected as? String {
+            return string
+        }
+        
+        if let int = selected as? Int {
+            return String(int)
+        }
+        
+        if let double = selected as? Double {
+            return String(double)
+        }
+        
+        return ""
     }
 }
