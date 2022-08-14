@@ -1,142 +1,94 @@
 import SwiftUI
 
-public struct ArrayStepper<T: Equatable>: View {
+// 1. Config init()
+//
+
+public struct ArrayStepper<T: Equatable>: View  {
     @Binding var selected: T
     @Binding var values: Array<T>
-
+    
     
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
+    @State private var index: Int = 0
     
     private let use: KeyPath<T, String>?
-    private let label: String
+    private let config: ArrayStepperConfig
     
-    private var index: Int {
-        values.firstIndex(of: selected) ?? 0
-    }
-
-    public init(selected: Binding<T>, values: Binding<Array<T>>, use: KeyPath<T, String>? = nil, label: String = "") {
+    public init(
+        selected: Binding<T>,
+        values: Binding<Array<T>>,
+        use: KeyPath<T, String>? = nil,
+        label: String? = nil,
+        incrementSpeed: Double? = nil,
+        decrementImage: ArrayStepperImage? = nil,
+        incrementImage: ArrayStepperImage? = nil,
+        disabledColor: Color? = nil,
+        labelOpacity: Double? = nil,
+        labelColor: Color? = nil,
+        valueColor: Color? = nil,
+        config: ArrayStepperConfig = ArrayStepperConfig()
+    ) {
+        // Compose config
+        var config = config
+        config.label = label ?? config.label
+        config.incrementSpeed = incrementSpeed ?? config.incrementSpeed
+        config.decrementImage = decrementImage ?? config.decrementImage
+        config.incrementImage = incrementImage ?? config.incrementImage
+        config.disabledColor = disabledColor ?? config.disabledColor
+        config.labelOpacity = labelOpacity ?? config.labelOpacity
+        config.labelColor = labelColor ?? config.labelColor
+        config.valueColor = valueColor ?? config.valueColor
+        
+        // Assign properties
         self._selected = selected
         self._values = values
         self.use = use
-        self.label = label
+        self.config = config
     }
-
+    
     public var body: some View {
         HStack {
-            longPressButton(
-                image: "minus.circle.fill",
-                action: {
-                    if selected != values.first {
-                        selected = values[index - 1]
-                    }
-                },
-                condition: selected == values.first,
-                longAction: .decrement
+            LongPressButton(
+                selected: $selected,
+                values: $values,
+                config: config,
+                image: config.decrementImage,
+                action: .decrement
             )
-        
+            
             Spacer()
             
             VStack {
-//                Text(aperture.value)
-////                Text("\(selected as! String)")
-//                if let use = use {
-//                    Text(selected[keyPath: use])
-//                } else {
-                    Text(String(describing: selected))
-//                }
+                if let use = use,
+                   let keyPathExists = selected[keyPath: use] {
+                    Text(keyPathExists).multilineTextAlignment(.center)
+                        .font(.system(size: 24, weight: .black))
+                        .foregroundColor(config.valueColor)
+                } else {
+                    Text(String(describing: selected)).multilineTextAlignment(.center)
+                        .font(.system(size: 24, weight: .black))
+                        .foregroundColor(config.valueColor)
+                }
                 
-                Text(label)//.textFieldStepperLabel()
+                if let label = config.label {
+                    Text(label)
+                        .font(.footnote)
+                        .fontWeight(.light)
+                        .foregroundColor(config.labelColor)
+                        .opacity(config.labelOpacity)
+                }
             }
             
             Spacer()
             
-            longPressButton(
-                image: "plus.circle.fill",
-                action: {
-                    if !isLongPressing {
-                        if selected != values.last {
-                            selected = values[index + 1]
-                        }
-                    } else {
-                        invalidateLongPress()
-                    }
-                },
-                condition: selected == values.last,
-                longAction: .increment
+            LongPressButton(
+                selected: $selected,
+                values: $values,
+                config: config,
+                image: config.incrementImage,
+                action: .increment
             )
         }
-    }
-    
-    func longPressButton(image: String, action: @escaping () -> Void, condition: Bool, longAction: Action) -> some View {
-        return Button(action: action, label: {
-            Image(systemName: image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 35)
-        })
-//        .textFieldStepperDisabled(condition)
-        .simultaneousGesture(
-            LongPressGesture(minimumDuration: 0.25).onEnded {
-                startTimer($0, action: longAction)
-            }
-        )
-    }
-    
-    enum Action {
-        case decrement,
-             increment
-    }
-    
-    /**
-     * Decreases or increases the doubleValue
-     */
-    func updateSelected(_ action: Action) {
-        switch action {
-            case .decrement :
-                selected = values[index - 1]
-            case .increment :
-                selected = values[index + 1]
-            }
-    }
-    
-    /**
-     * Starts the long press
-     */
-    func startTimer(_ value: LongPressGesture.Value, action: Action) {
-        isLongPressing = true
-        timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { _ in
-            // Perform action regardless of actual value
-            updateSelected(action)
-            
-            // If value after action is outside of constraints, stop long press
-            if values[index] == values.first || values[index] == values.last {
-                invalidateLongPress()
-            }
-        }
-    }
-    
-    /**
-     * Stops the long press
-     */
-    func invalidateLongPress() {
-        isLongPressing = false
-        timer?.invalidate()
-    }
-    
-    func convertToString(_ input: T) -> String {
-        if let string = selected as? String {
-            return string
-        }
-        
-        if let int = selected as? Int {
-            return String(int)
-        }
-        
-        if let double = selected as? Double {
-            return String(double)
-        }
-        
-        return ""
     }
 }
