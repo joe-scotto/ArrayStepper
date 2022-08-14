@@ -1,8 +1,5 @@
 import SwiftUI
 
-// 1. Config init()
-//
-
 public struct ArrayStepper<T: Equatable>: View  {
     @Binding var selected: T
     @Binding var values: Array<T>
@@ -92,7 +89,7 @@ public struct ArrayStepper<T: Equatable>: View  {
                 action: .increment
             )
         }
-        .onChange(of: selected) { _ in
+        .onAppearOrChange(of: selected) {
             if config.findClosestMatch {
                 // Get the new index or default if not found
                 let updatedIndex = values.firstIndex(of: selected) ?? 0
