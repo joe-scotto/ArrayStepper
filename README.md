@@ -26,7 +26,7 @@ struct ContentView: View {
 ```
 
 # Advanced
-By default, `ArrayStepper` can accept anything that conforms to `Equatable`. This should be fine in most cases but there may be times where you want to pass in more complex types such as custom structs. This is where the `use` parameter becomes necessary in order to define what value to show. `ArrayStepper` uses `KeyPath` to determine which property of your struct to use and you pass it in with the `use` parameter as shown below.
+By default, `ArrayStepper` can accept anything that conforms to `Equatable`. This should be fine in most cases but there may be times where you want to pass in more complex types such as custom structs. This is where the `use` parameter becomes necessary in order to define what value to show. `ArrayStepper` uses `KeyPath` to determine which property of your struct to use.
 
 ``` swift 
 struct Person {
