@@ -83,8 +83,8 @@ Below are the parameters available on both `ArrayStepper` and `ArrayStepperConfi
 |----------------------|-----------------------|--------------------------------------------------------------------------------|---------------------------------------------------------------------|
 | label                | String                | “”                                                                             | Label to show under value.                                          |
 | incrementSpeed       | Double                | 0.25                                                                           | How many seconds before the button action is ran.                   |
-| decrementImage       | TextFieldStepperImage | TextFieldStepperImage(systemName: "minus.circle.fill")                         | Image for decrement button.                                         |
-| incrementImage       | TextFieldStepperImage | TextFieldStepperImage(systemName: "plus.circle.fill")                          | Image for increment button.                                         |
+| decrementImage       | ArrayStepperImage     | ArrayStepperImage(systemName: "minus.circle.fill")                             | Image for decrement button.                                         |
+| incrementImage       | ArrayStepperImage     | ArrayStepperImage(systemName: "plus.circle.fill")                              | Image for increment button.                                         |
 | disabledColor        | Color                 | Color(UIColor.lightGray)                                                       | Color of disabled button.                                           |
 | labelOpacity         | Double                | 1.0                                                                            | Opacity of label under value.                                       |
 | labelColor           | Color                 | .primary                                                                       | Color of label under value.                                         |
