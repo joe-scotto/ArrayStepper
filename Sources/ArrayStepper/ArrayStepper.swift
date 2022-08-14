@@ -7,10 +7,9 @@ public struct ArrayStepper<T: Equatable>: View  {
     @Binding var selected: T
     @Binding var values: Array<T>
     
-    
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
-    @State private var index: Int = 0
+    @State private var index: Int
     
     private let use: KeyPath<T, String>?
     private let config: ArrayStepperConfig
@@ -29,6 +28,11 @@ public struct ArrayStepper<T: Equatable>: View  {
         valueColor: Color? = nil,
         config: ArrayStepperConfig = ArrayStepperConfig()
     ) {
+        // If selected is not found in values, throw error.
+        if !values.wrappedValue.contains(selected.wrappedValue) {
+            fatalError("Initial values not found for ArrayStepper, please confirm your selected value exists in your values array.")
+        }
+        
         // Compose config
         var config = config
         config.label = label ?? config.label
@@ -43,6 +47,7 @@ public struct ArrayStepper<T: Equatable>: View  {
         // Assign properties
         self._selected = selected
         self._values = values
+        self._index = State(initialValue: values.wrappedValue.firstIndex(of: selected.wrappedValue) ?? 0)
         self.use = use
         self.config = config
     }
@@ -52,6 +57,7 @@ public struct ArrayStepper<T: Equatable>: View  {
             LongPressButton(
                 selected: $selected,
                 values: $values,
+                index: $index,
                 config: config,
                 image: config.decrementImage,
                 action: .decrement
@@ -71,8 +77,8 @@ public struct ArrayStepper<T: Equatable>: View  {
                         .foregroundColor(config.valueColor)
                 }
                 
-                if let label = config.label {
-                    Text(label)
+                if !config.label.isEmpty {
+                    Text(config.label)
                         .font(.footnote)
                         .fontWeight(.light)
                         .foregroundColor(config.labelColor)
@@ -85,6 +91,7 @@ public struct ArrayStepper<T: Equatable>: View  {
             LongPressButton(
                 selected: $selected,
                 values: $values,
+                index: $index,
                 config: config,
                 image: config.incrementImage,
                 action: .increment
