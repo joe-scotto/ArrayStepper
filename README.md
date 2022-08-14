@@ -12,15 +12,41 @@ struct ContentView: View {
     @State private var values = [
         "Joe",
         "Tommy",
-        "Kandy",
-        "Alex",
-        "Aaron"
+        "Kandy"
     ]
 
     var body: some View {
         ArrayStepper(
             selected: $selected,
             values: $values,
+            label: "Person"
+        )
+    }
+}
+```
+
+# Advanced
+By default, `ArrayStepper` can accept anything that conforms to `Equatable`. This should be fine in most cases but there may be times where you want to pass in more complex types such as custom structs. This is where the `use` parameter becomes necessary in order to define what value to show. `ArrayStepper` uses `KeyPath` to determine which property of your struct to use and you pass it in with the `use` parameter as shown below.
+
+``` swift 
+struct Person {
+    var name: String
+    var age: Int?
+}
+
+struct ContentView: View {
+    @State private var selected = Person(name: "Joe", age: 23)
+    @State private var values = [
+        Person(name: "Joe", age: 23),
+        Person(name: "Tommy", age: 20),
+        Person(name: "Kandy", age: nil)
+    ]
+
+    var body: some View {
+        ArrayStepper(
+            selected: $selected,
+            values: $values,
+            use: \.name,
             label: "Person"
         )
     }
@@ -37,9 +63,7 @@ The defaults should be fine for most situations but there are certainly cases wh
         @State private var values = [
             "Joe",
             "Tommy",
-            "Kandy",
-            "Alex",
-            "Aaron"
+            "Kandy"
         ]
 
         var body: some View {
@@ -60,9 +84,7 @@ The defaults should be fine for most situations but there are certainly cases wh
         @State private var values = [
             "Joe",
             "Tommy",
-            "Kandy",
-            "Alex",
-            "Aaron"
+            "Kandy"
         ]
 
         let config = ArrayStepperConfig(
