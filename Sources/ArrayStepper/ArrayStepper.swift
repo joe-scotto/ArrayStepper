@@ -26,13 +26,9 @@ public struct ArrayStepper<T: Equatable>: View  {
         labelOpacity: Double? = nil,
         labelColor: Color? = nil,
         valueColor: Color? = nil,
+        findClosestMatch: Bool? = nil,
         config: ArrayStepperConfig = ArrayStepperConfig()
     ) {
-        // If selected is not found in values, throw error.
-        if !values.wrappedValue.contains(selected.wrappedValue) {
-            fatalError("Initial values not found for ArrayStepper, please confirm your selected value exists in your values array.")
-        }
-        
         // Compose config
         var config = config
         config.label = label ?? config.label
@@ -43,6 +39,12 @@ public struct ArrayStepper<T: Equatable>: View  {
         config.labelOpacity = labelOpacity ?? config.labelOpacity
         config.labelColor = labelColor ?? config.labelColor
         config.valueColor = valueColor ?? config.valueColor
+        config.findClosestMatch = findClosestMatch ?? config.findClosestMatch
+        
+        // If selected is not found in values, throw error.
+        if !values.wrappedValue.contains(selected.wrappedValue) && !config.findClosestMatch {
+            fatalError("Initial values not found for ArrayStepper, please confirm your selected value exists in your values array.")
+        }
         
         // Assign properties
         self._selected = selected
@@ -66,16 +68,9 @@ public struct ArrayStepper<T: Equatable>: View  {
             Spacer()
             
             VStack {
-                if let use = use,
-                   let keyPathExists = selected[keyPath: use] {
-                    Text(keyPathExists).multilineTextAlignment(.center)
-                        .font(.system(size: 24, weight: .black))
-                        .foregroundColor(config.valueColor)
-                } else {
-                    Text(String(describing: selected)).multilineTextAlignment(.center)
-                        .font(.system(size: 24, weight: .black))
-                        .foregroundColor(config.valueColor)
-                }
+                Text(use != nil ? selected[keyPath: use!] : String(describing: selected))
+                    .font(.system(size: 24, weight: .black))
+                    .foregroundColor(config.valueColor)
                 
                 if !config.label.isEmpty {
                     Text(config.label)
@@ -96,6 +91,16 @@ public struct ArrayStepper<T: Equatable>: View  {
                 image: config.incrementImage,
                 action: .increment
             )
+        }
+        .onChange(of: selected) { _ in
+            if config.findClosestMatch {
+                // Get the new index or default if not found
+                let updatedIndex = values.firstIndex(of: selected) ?? 0
+                
+                // Find the closest match in values
+                selected = values[updatedIndex]
+                index = updatedIndex
+            }
         }
     }
 }
