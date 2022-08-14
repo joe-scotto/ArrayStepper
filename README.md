@@ -5,7 +5,7 @@ A simple SwiftUI component for stepping through the contents of an array. This p
 Tested on iOS 16.0 but should work on both iOS and iPadOS 15 and up.
 
 # Usage
-Creating a `ArrayStepper` is simple. 
+Creating an `ArrayStepper` is simple. 
 ``` swift
 struct ContentView: View {
     @State private var selected = "Joe"
@@ -13,18 +13,102 @@ struct ContentView: View {
         "Joe",
         "Tommy",
         "Kandy",
-        
+        "Alex",
+        "Aaron"
     ]
 
     var body: some View {
         ArrayStepper(
-            selected: $butter, 
-            unit: "oz", 
+            selected: $selected,
+            values: $values,
             label: "Person"
         )
     }
 }
 ```
+
+# Customizing
+The defaults should be fine for most situations but there are certainly cases where they won't be. There are two methods that will allow you to change these [parameters](#parameters).
+
+1. If you just want to modify a single component, you can directly pass in the parameter name and value.
+    ``` swift
+    struct ContentView: View {
+        @State private var selected = "Joe"
+        @State private var values = [
+            "Joe",
+            "Tommy",
+            "Kandy",
+            "Alex",
+            "Aaron"
+        ]
+
+        var body: some View {
+            ArrayStepper(
+                selected: $selected, 
+                values: $values, 
+                label: "Person",
+                disabledColor: .black
+            )
+        }
+    }
+    ```
+
+2. If you want to modify multiple at once, use `ArrayStepperConfig`. You can either pass a different one into each instance of the component or create a single one and make it available globally as a sort of default.
+    ``` swift
+    struct ContentView: View {
+        @State private var selected = "Joe"
+        @State private var values = [
+            "Joe",
+            "Tommy",
+            "Kandy",
+            "Alex",
+            "Aaron"
+        ]
+
+        let config = ArrayStepperConfig(
+            label: "Person",
+            disabledColor: .black
+        )
+
+        var body: some View {
+            ArrayStepper(selected: $selected, values: $values, config: config)
+        }
+    }
+    ```
+    
+# Parameters
+Below are the parameters available on both `ArrayStepper` and `ArrayStepperConfig`.
+
+| Parameter            | Type                  | Default                                                                        | Note                                                                |
+|----------------------|-----------------------|--------------------------------------------------------------------------------|---------------------------------------------------------------------|
+| label                | String                | “”                                                                             | Label to show under value.                                          |
+| incrementSpeed       | Double                | 0.25                                                                           | How many seconds before the button action is ran.                   |
+| decrementImage       | TextFieldStepperImage | TextFieldStepperImage(systemName: "minus.circle.fill")                         | Image for decrement button.                                         |
+| incrementImage       | TextFieldStepperImage | TextFieldStepperImage(systemName: "plus.circle.fill")                          | Image for increment button.                                         |
+| disabledColor        | Color                 | Color(UIColor.lightGray)                                                       | Color of disabled button.                                           |
+| labelOpacity         | Double                | 1.0                                                                            | Opacity of label under value.                                       |
+| labelColor           | Color                 | .primary                                                                       | Color of label under value.                                         |
+| valueColor           | Color                 | .primary                                                                       | Color of value.                                                     |
+
+# Styling
+Below are the default colors and images that `ArrayStepper` uses. In addition to this, when a button is disabled it will use `Color(UIColor.lightGray)` which can be overridden with the `disabledColor` parameter. You can also specify the label opacity and color with `labelOpacity` and `labelColor`. If you want to change the color of the main value, use `valueColor`.
+
+| Button          | Color                 | Image                 |
+|-----------------|-----------------------|-----------------------|
+| decrementButton | .accentColor          | minus.circle.fill     |
+| incrementButton | .accentColor          | plus.circle.fill      |
+
+You can override the default images by creating an instance of `ArrayStepperImage` and passing that to the corresponding parameter on either `ArrayStepper` or `ArrayStepperConfig`. There are two methods of instantiating `ArrayStepperImage`. Currently there is no method to just change the color, you must provide an image as well.
+
+1. If you’re just using a system named image, you can use the `systemName` parameter. 
+    ``` swift 
+    let image = ArrayStepperImage(systemName: "circle.fill")
+    ```
+    
+2. If you're using a custom image, directly pass an `Image`.
+    ``` swift 
+    let image = ArrayStepperImage(image: Image(systemName: "circle.fill")
+    ```
 
 # License
 MIT License
