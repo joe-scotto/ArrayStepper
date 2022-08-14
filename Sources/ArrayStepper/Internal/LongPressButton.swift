@@ -1,12 +1,9 @@
 import SwiftUI
 
 public struct LongPressButton<T: Equatable>: View {
-    private var index: Int {
-        return values.firstIndex(of: selected) ?? 0
-    }
-    
     @Binding var selected: T
     @Binding var values: Array<T>
+    @Binding var index: Int
     
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
@@ -16,9 +13,25 @@ public struct LongPressButton<T: Equatable>: View {
              increment
     }
     
-    let config: ArrayStepperConfig
-    let image: ArrayStepperImage
-    let action: Action
+    private let config: ArrayStepperConfig
+    private let image: ArrayStepperImage
+    private let action: Action
+    
+    init(
+        selected: Binding<T>,
+        values: Binding<Array<T>>,
+        index: Binding<Int>,
+        config: ArrayStepperConfig,
+        image: ArrayStepperImage,
+        action: Action
+    ) {
+        self._selected = selected
+        self._values = values
+        self._index = index
+        self.config = config
+        self.image = image
+        self.action = action
+    }
     
     public var body: some View {
         Button(action: {
@@ -31,7 +44,7 @@ public struct LongPressButton<T: Equatable>: View {
                 startTimer($0, action: action)
             }
         )
-        .foregroundColor(!shouldDisable() ? image.color : config.disabledColor)
+        .foregroundColor(shouldDisable() ? config.disabledColor : image.color)
         .disabled(shouldDisable())
     }
     
@@ -49,11 +62,13 @@ public struct LongPressButton<T: Equatable>: View {
     private func shouldDisable() -> Bool {
         var shouldDisable = false
         
+        print("ind: \(index)")
+        
         switch action {
             case .decrement:
-                shouldDisable = selected == values.first
+                shouldDisable = index == 0
             case .increment:
-                shouldDisable = selected == values.last
+                shouldDisable = index == values.lastIndex
         }
         
         return shouldDisable
@@ -62,14 +77,14 @@ public struct LongPressButton<T: Equatable>: View {
     /**
      * Starts the long press
      */
-    func startTimer(_ value: LongPressGesture.Value, action: Action) {
+    private func startTimer(_ value: LongPressGesture.Value, action: Action) {
         isLongPressing = true
         timer = Timer.scheduledTimer(withTimeInterval: config.incrementSpeed, repeats: true) { _ in
             // Perform action regardless of actual value
             updateSelected()
             
             // If value after action is outside of constraints, stop long press
-            if values[index] == values.first || values[index] == values.last {
+            if index == 0 || index == values.lastIndex {
                 invalidateLongPress()
             }
         }
@@ -87,8 +102,11 @@ public struct LongPressButton<T: Equatable>: View {
             case .increment :
                 newIndex = index + 1
             }
-        
+    
         // Verify the new index will be in the values array
-        selected = values.indices.contains(newIndex) ? values[newIndex] : values[index]
+        if values.indices.contains(newIndex) {
+            index = newIndex
+            selected = values[index]
+        }
     }
 }
