@@ -62,8 +62,6 @@ public struct LongPressButton<T: Equatable>: View {
     private func shouldDisable() -> Bool {
         var shouldDisable = false
         
-        print("ind: \(index)")
-        
         switch action {
             case .decrement:
                 shouldDisable = index == 0
