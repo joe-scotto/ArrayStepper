@@ -46,8 +46,8 @@ public struct ArrayStepper<T: Equatable>: View  {
         // Assign properties
         self._selected = selected
         self._values = values
-        self.display = display
         self._index = State(initialValue: values.wrappedValue.firstIndex(of: selected.wrappedValue) ?? 0)
+        self.display = display
         self.config = config
     }
     
