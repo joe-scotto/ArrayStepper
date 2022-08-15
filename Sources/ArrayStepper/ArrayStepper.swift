@@ -4,7 +4,7 @@ public struct ArrayStepper<T: Hashable>: View {
     @Binding var selected: T
     @Binding var values: [T]
     
-    private var sets: [ArrayStepperSet<T>]
+    private var sections: [ArrayStepperSection<T>]
     
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
@@ -16,7 +16,7 @@ public struct ArrayStepper<T: Hashable>: View {
     public init(
         selected: Binding<T>,
         values: Binding<[T]>,
-        sets: [ArrayStepperSet<T>]? = nil,
+        sections: [ArrayStepperSection<T>]? = nil,
         display: @escaping (T) -> String = { "\($0)" },
         label: String? = nil,
         incrementSpeed: Double? = nil,
@@ -51,10 +51,10 @@ public struct ArrayStepper<T: Hashable>: View {
             fatalError("Initial values not found for ArrayStepper, please confirm your selected value exists in your values array.")
         }
         
-        if let sets = sets {
-            self.sets = sets
+        if let sections = sections {
+            self.sections = sections
         } else {
-            self.sets = [ArrayStepperSet(header: config.label, items: _values.wrappedValue)]
+            self.sections = [ArrayStepperSection(header: config.label, items: _values.wrappedValue)]
         }
         
         self.display = display
@@ -79,7 +79,7 @@ public struct ArrayStepper<T: Hashable>: View {
                     display(values[index]),
                     destination: ArrayStepperList(
                         selected: $selected,
-                        sets: sets,
+                        sections: sections,
                         display: display
                     )
                 )
