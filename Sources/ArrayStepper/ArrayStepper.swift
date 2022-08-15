@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct ArrayStepper<T: Equatable>: View  {
+public struct ArrayStepper<T: Equatable>: View where T: Hashable  {
     @Binding var selected: T
     @Binding var values: [T]
     
@@ -65,9 +65,16 @@ public struct ArrayStepper<T: Equatable>: View  {
             Spacer()
             
             VStack {
-                Text(display(values[index]))
-                    .font(.system(size: 24, weight: .black))
-                    .foregroundColor(config.valueColor)
+                NavigationLink(
+                    display(values[index]),
+                    destination: ArrayStepperList(
+                        selected: $selected,
+                        values: $values,
+                        display: display
+                    )
+                )
+                .font(.system(size: 24, weight: .black))
+                .foregroundColor(config.valueColor)
                 
                 if !config.label.isEmpty {
                     Text(config.label)
