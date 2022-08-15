@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct ArrayStepper<T: Equatable>: View where T: Hashable  {
+public struct ArrayStepper<T: Hashable>: View {
     @Binding var selected: T
     @Binding var values: [T]
     
@@ -41,15 +41,15 @@ public struct ArrayStepper<T: Equatable>: View where T: Hashable  {
         config.valueColor = valueColor ?? config.valueColor
         config.findClosestMatch = findClosestMatch ?? config.findClosestMatch
         
-        // If selected is not found in values, throw error.
-        if !values.wrappedValue.contains(selected.wrappedValue) && !config.findClosestMatch {
-            fatalError("Initial values not found for ArrayStepper, please confirm your selected value exists in your values array.")
-        }
-        
         // Assign properties
         self._selected = selected
         self._values = values
         self._index = State(initialValue: values.wrappedValue.firstIndex(of: selected.wrappedValue) ?? 0)
+        
+        // If selected is not found in values, throw error.
+        if !values.wrappedValue.contains(selected.wrappedValue) && !config.findClosestMatch {
+            fatalError("Initial values not found for ArrayStepper, please confirm your selected value exists in your values array.")
+        }
         
         if let sets = sets {
             self.sets = sets
@@ -107,6 +107,7 @@ public struct ArrayStepper<T: Equatable>: View where T: Hashable  {
             )
         }
         .onAppearOrChange(of: selected) {
+            // FIXME: Closest Match needs fixing. Probably bind .onChange to the underlying list to update the index.
 //            if config.findClosestMatch {
                 // Get the new index or default if not found
                 let updatedIndex = values.firstIndex(of: selected) ?? 0

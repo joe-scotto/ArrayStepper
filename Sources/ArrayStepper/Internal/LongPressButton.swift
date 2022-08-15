@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct LongPressButton<T: Equatable>: View {
+public struct LongPressButton<T: Hashable>: View {
     @Binding var selected: T
     @Binding var values: Array<T>
     @Binding var index: Int
