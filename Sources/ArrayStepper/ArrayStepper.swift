@@ -4,6 +4,8 @@ public struct ArrayStepper<T: Equatable>: View where T: Hashable  {
     @Binding var selected: T
     @Binding var values: [T]
     
+    private var sets: [ArrayStepperSet<T>]
+    
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
     @State private var index: Int
@@ -14,6 +16,7 @@ public struct ArrayStepper<T: Equatable>: View where T: Hashable  {
     public init(
         selected: Binding<T>,
         values: Binding<[T]>,
+        sets: [ArrayStepperSet<T>]? = nil,
         display: @escaping (T) -> String = { "\($0)" },
         label: String? = nil,
         incrementSpeed: Double? = nil,
@@ -47,6 +50,13 @@ public struct ArrayStepper<T: Equatable>: View where T: Hashable  {
         self._selected = selected
         self._values = values
         self._index = State(initialValue: values.wrappedValue.firstIndex(of: selected.wrappedValue) ?? 0)
+        
+        if let sets = sets {
+            self.sets = sets
+        } else {
+            self.sets = [ArrayStepperSet(header: config.label, items: _values.wrappedValue)]
+        }
+        
         self.display = display
         self.config = config
     }
@@ -69,7 +79,7 @@ public struct ArrayStepper<T: Equatable>: View where T: Hashable  {
                     display(values[index]),
                     destination: ArrayStepperList(
                         selected: $selected,
-                        values: $values,
+                        sets: sets,
                         display: display
                     )
                 )
@@ -97,14 +107,14 @@ public struct ArrayStepper<T: Equatable>: View where T: Hashable  {
             )
         }
         .onAppearOrChange(of: selected) {
-            if config.findClosestMatch {
+//            if config.findClosestMatch {
                 // Get the new index or default if not found
                 let updatedIndex = values.firstIndex(of: selected) ?? 0
                 
                 // Find the closest match in values
                 selected = values[updatedIndex]
                 index = updatedIndex
-            }
+//            }
         }
     }
 }
