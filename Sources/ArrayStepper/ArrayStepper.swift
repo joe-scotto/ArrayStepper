@@ -2,19 +2,19 @@ import SwiftUI
 
 public struct ArrayStepper<T: Equatable>: View  {
     @Binding var selected: T
-    @Binding var values: Array<T>
+    @Binding var values: [T]
     
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
     @State private var index: Int
     
-    private let use: KeyPath<T, String>?
+    private var display: (T) -> String
     private let config: ArrayStepperConfig
     
     public init(
         selected: Binding<T>,
-        values: Binding<Array<T>>,
-        use: KeyPath<T, String>? = nil,
+        values: Binding<[T]>,
+        display: @escaping (T) -> String = { "\($0)" },
         label: String? = nil,
         incrementSpeed: Double? = nil,
         decrementImage: ArrayStepperImage? = nil,
@@ -46,8 +46,8 @@ public struct ArrayStepper<T: Equatable>: View  {
         // Assign properties
         self._selected = selected
         self._values = values
+        self.display = display
         self._index = State(initialValue: values.wrappedValue.firstIndex(of: selected.wrappedValue) ?? 0)
-        self.use = use
         self.config = config
     }
     
@@ -65,7 +65,7 @@ public struct ArrayStepper<T: Equatable>: View  {
             Spacer()
             
             VStack {
-                Text(use != nil ? selected[keyPath: use!] : String(describing: selected))
+                Text(display(values[index]))
                     .font(.system(size: 24, weight: .black))
                     .foregroundColor(config.valueColor)
                 
