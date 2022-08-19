@@ -12,13 +12,6 @@ public struct ArrayStepper<T: Hashable>: View {
     
     private var display: (T) -> String
     private let config: ArrayStepperConfig
-    private let selectedCheck: SelectedCheck
-    
-    public enum SelectedCheck {
-        case Fail,
-             First,
-             Append
-    }
     
     public init(
         selected: Binding<T>,
@@ -35,7 +28,7 @@ public struct ArrayStepper<T: Hashable>: View {
         valueColor: Color? = nil,
         valuesAreUnique: Bool? = nil,
         valuesContainValue: Bool? = nil,
-        selectedCheck: SelectedCheck = .First,
+        selectedCheck: SelectedCheck? = nil,
         config: ArrayStepperConfig = ArrayStepperConfig()
     ) {
         // Compose config
@@ -50,6 +43,7 @@ public struct ArrayStepper<T: Hashable>: View {
             config.valueColor = valueColor ?? config.valueColor
             config.valuesAreUnique = valuesAreUnique ?? config.valuesAreUnique
             config.valuesContainValue = valuesContainValue ?? config.valuesContainValue
+            config.selectedCheck = selectedCheck ?? config.selectedCheck
         
         // Assign bindings
         self._selected = selected
@@ -59,7 +53,6 @@ public struct ArrayStepper<T: Hashable>: View {
         self.sections = sections != nil ? sections! : [ArrayStepperSection(header: config.label, items: _values.wrappedValue)]
         self.display = display
         self.config = config
-        self.selectedCheck = selectedCheck
     }
 
     public var body: some View {
@@ -122,7 +115,7 @@ public struct ArrayStepper<T: Hashable>: View {
                 if let selectedIndex = values.firstIndex(of: selected) {
                     index = selectedIndex
                 } else {
-                    switch selectedCheck {
+                    switch config.selectedCheck {
                         case .Fail : fatalError("Initial selected value not found for ArrayStepper, please confirm your selected value exists in your values array.")
                         case .First : index = 0
                         case .Append :
