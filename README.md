@@ -55,9 +55,15 @@ struct ContentView: View {
 ```
 
 # Uniqueness
-Data arrays passed into `ArrayStepper` are expected to be unique, meaning, no values repeat. It would defeat the purpose of this component could let you select one of multiple that are all the same. `ArrayStepper` uses `firstIndex(of: )` to find the value within the array.
+`ArrayStepper` expects arrays be unique when passed in, meaning, no values repeat. It would completely defeat the purpose of using this component if you could select one of multiple of the same value. In order to ensure the `values` array is unique, `ArrayStepper` utilizes a custom filter by default with `O(n)` complexity. If you know for certain the `values` are unique, you can disable this to improve performance with the `valuesAreUnique` parameter. Please keep in mind that if you do disable this and the `values` are not unique, visual bugs can occur.
 
-- 
+# Initial Value
+By default, `ArrayStepper` will try setting `selected` by finding the first index of `selected` in the `values`. There are three ways `ArrayStepper` will handle setting `selected` if not found in the `values` and can be specified with the `selectedCheck` parameter.
+
+1. .Fail - Throws a `fatalError()` if the `selected` is not found in `values` and is the default setting.
+2. .First - Sets the `selected` to the first value found in `values`.
+3. .Append - Appends `selected` to `values` and sets `selected` to the last element in `values`.
+
 
 # Customizing
 The defaults should be fine for most situations but there are certainly cases where they won't be. There are two methods that will allow you to change these [parameters](#parameters).
@@ -107,16 +113,18 @@ The defaults should be fine for most situations but there are certainly cases wh
 # Parameters
 Below are the parameters available on both `ArrayStepper` and `ArrayStepperConfig`.
 
-| Parameter            | Type                  | Default                                                                        | Note                                                                |
-|----------------------|-----------------------|--------------------------------------------------------------------------------|---------------------------------------------------------------------|
-| label                | String                | “”                                                                             | Label to show under value.                                          |
-| incrementSpeed       | Double                | 0.25                                                                           | How many seconds before the button action is ran.                   |
-| decrementImage       | ArrayStepperImage     | ArrayStepperImage(systemName: "minus.circle.fill")                             | Image for decrement button.                                         |
-| incrementImage       | ArrayStepperImage     | ArrayStepperImage(systemName: "plus.circle.fill")                              | Image for increment button.                                         |
-| disabledColor        | Color                 | Color(UIColor.lightGray)                                                       | Color of disabled button.                                           |
-| labelOpacity         | Double                | 1.0                                                                            | Opacity of label under value.                                       |
-| labelColor           | Color                 | .primary                                                                       | Color of label under value.                                         |
-| valueColor           | Color                 | .primary                                                                       | Color of value.                                                     |
+| Parameter            | Type                  | Default                                                                        | Note                                                                    |
+|----------------------|-----------------------|--------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| label                | String                | “”                                                                             | Label to show under value.                                              |
+| incrementSpeed       | Double                | 0.25                                                                           | How many seconds before the button action is ran.                       |
+| decrementImage       | ArrayStepperImage     | ArrayStepperImage(systemName: "minus.circle.fill")                             | Image for decrement button.                                             |
+| incrementImage       | ArrayStepperImage     | ArrayStepperImage(systemName: "plus.circle.fill")                              | Image for increment button.                                             |
+| disabledColor        | Color                 | Color(UIColor.lightGray)                                                       | Color of disabled button.                                               |
+| labelOpacity         | Double                | 1.0                                                                            | Opacity of label under value.                                           |
+| labelColor           | Color                 | .primary                                                                       | Color of label under value.                                             |
+| valueColor           | Color                 | .primary                                                                       | Color of value.                                                         |
+| valuesAreUnique      | Bool                  | false                                                                          | Disables uniqueness checks if values array contains only unique values. |
+| selectedCheck        | SelectedCheck         | .Fail                                                                          | Handling of missing selected value in values array.                     |
 
 # Styling
 Below are the default colors and images that `ArrayStepper` uses. In addition to this, when a button is disabled it will use `Color(UIColor.lightGray)` which can be overridden with the `disabledColor` parameter. You can also specify the label opacity and color with `labelOpacity` and `labelColor`. If you want to change the color of the main value, use `valueColor`.
