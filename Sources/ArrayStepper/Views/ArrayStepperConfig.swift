@@ -11,7 +11,8 @@ public struct ArrayStepperConfig {
     var valueColor: Color
     var valuesAreUnique: Bool
     var valuesContainValue: Bool
-
+    var selectedCheck: SelectedCheck
+    
     public init (
         label: String = "",
         incrementSpeed: Double = 0.25,
@@ -22,7 +23,8 @@ public struct ArrayStepperConfig {
         labelColor: Color = .primary,
         valueColor: Color = .primary,
         valuesAreUnique: Bool = false,
-        valuesContainValue: Bool = false
+        valuesContainValue: Bool = false,
+        selectedCheck: SelectedCheck = .Fail
     ) {
         self.label = label
         self.incrementSpeed = incrementSpeed
@@ -34,5 +36,6 @@ public struct ArrayStepperConfig {
         self.valueColor = valueColor
         self.valuesAreUnique = valuesAreUnique
         self.valuesContainValue = valuesContainValue
+        self.selectedCheck = selectedCheck
     }
 }
