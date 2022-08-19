@@ -8,10 +8,17 @@ public struct ArrayStepper<T: Hashable>: View {
     
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
-    @State private var index: Int
+    @State private var index: Int = 0
     
     private var display: (T) -> String
     private let config: ArrayStepperConfig
+    private let selectedCheck: SelectedCheck
+    
+    public enum SelectedCheck {
+        case Fail,
+             First,
+             Append
+    }
     
     public init(
         selected: Binding<T>,
@@ -26,41 +33,35 @@ public struct ArrayStepper<T: Hashable>: View {
         labelOpacity: Double? = nil,
         labelColor: Color? = nil,
         valueColor: Color? = nil,
-        findClosestMatch: Bool? = nil,
+        valuesAreUnique: Bool? = nil,
+        valuesContainValue: Bool? = nil,
+        selectedCheck: SelectedCheck = .First,
         config: ArrayStepperConfig = ArrayStepperConfig()
     ) {
         // Compose config
         var config = config
-        config.label = label ?? config.label
-        config.incrementSpeed = incrementSpeed ?? config.incrementSpeed
-        config.decrementImage = decrementImage ?? config.decrementImage
-        config.incrementImage = incrementImage ?? config.incrementImage
-        config.disabledColor = disabledColor ?? config.disabledColor
-        config.labelOpacity = labelOpacity ?? config.labelOpacity
-        config.labelColor = labelColor ?? config.labelColor
-        config.valueColor = valueColor ?? config.valueColor
-        config.findClosestMatch = findClosestMatch ?? config.findClosestMatch
+            config.label = label ?? config.label
+            config.incrementSpeed = incrementSpeed ?? config.incrementSpeed
+            config.decrementImage = decrementImage ?? config.decrementImage
+            config.incrementImage = incrementImage ?? config.incrementImage
+            config.disabledColor = disabledColor ?? config.disabledColor
+            config.labelOpacity = labelOpacity ?? config.labelOpacity
+            config.labelColor = labelColor ?? config.labelColor
+            config.valueColor = valueColor ?? config.valueColor
+            config.valuesAreUnique = valuesAreUnique ?? config.valuesAreUnique
+            config.valuesContainValue = valuesContainValue ?? config.valuesContainValue
         
-        // Assign properties
+        // Assign bindings
         self._selected = selected
         self._values = values
-        self._index = State(initialValue: values.wrappedValue.firstIndex(of: selected.wrappedValue) ?? 0)
         
-        // If selected is not found in values, throw error.
-        if !values.wrappedValue.contains(selected.wrappedValue) && !config.findClosestMatch {
-            fatalError("Initial values not found for ArrayStepper, please confirm your selected value exists in your values array.")
-        }
-        
-        if let sections = sections {
-            self.sections = sections
-        } else {
-            self.sections = [ArrayStepperSection(header: config.label, items: _values.wrappedValue)]
-        }
-        
+        // Assign properties
+        self.sections = sections != nil ? sections! : [ArrayStepperSection(header: config.label, items: _values.wrappedValue)]
         self.display = display
         self.config = config
+        self.selectedCheck = selectedCheck
     }
-    
+
     public var body: some View {
         HStack {
             LongPressButton(
@@ -106,16 +107,36 @@ public struct ArrayStepper<T: Hashable>: View {
                 action: .increment
             )
         }
-        .onAppearOrChange(of: selected) {
-            // FIXME: Closest Match needs fixing. Probably bind .onChange to the underlying list to update the index.
-//            if config.findClosestMatch {
-                // Get the new index or default if not found
-                let updatedIndex = values.firstIndex(of: selected) ?? 0
+        .onAppear {
+            // Ensure values are unique
+            if !config.valuesAreUnique {
+                let uniqueValues = values.unique()
                 
-                // Find the closest match in values
-                selected = values[updatedIndex]
+                if values != uniqueValues {
+                    values = uniqueValues
+                }
+            }
+            
+            // Ensure values contains the selected value
+            if !config.valuesContainValue {
+                if let selectedIndex = values.firstIndex(of: selected) {
+                    index = selectedIndex
+                } else {
+                    switch selectedCheck {
+                        case .Fail : fatalError("Initial selected value not found for ArrayStepper, please confirm your selected value exists in your values array.")
+                        case .First : index = 0
+                        case .Append :
+                            values.append(selected)
+                            index = values.lastIndex
+                    }
+                }
+            }
+        }
+        .onChange(of: selected) { _ in
+            // Set index of selected from list
+            if let updatedIndex = values.firstIndex(of: selected) {
                 index = updatedIndex
-//            }
+            }
         }
     }
 }

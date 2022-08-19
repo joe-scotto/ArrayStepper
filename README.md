@@ -57,6 +57,8 @@ struct ContentView: View {
 # Uniqueness
 Data arrays passed into `ArrayStepper` are expected to be unique, meaning, no values repeat. It would defeat the purpose of this component could let you select one of multiple that are all the same. `ArrayStepper` uses `firstIndex(of: )` to find the value within the array.
 
+- 
+
 # Customizing
 The defaults should be fine for most situations but there are certainly cases where they won't be. There are two methods that will allow you to change these [parameters](#parameters).
 
