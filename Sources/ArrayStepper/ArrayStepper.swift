@@ -27,7 +27,6 @@ public struct ArrayStepper<T: Hashable>: View {
         labelColor: Color? = nil,
         valueColor: Color? = nil,
         valuesAreUnique: Bool? = nil,
-        valuesContainValue: Bool? = nil,
         selectedCheck: SelectedCheck? = nil,
         config: ArrayStepperConfig = ArrayStepperConfig()
     ) {
@@ -42,7 +41,6 @@ public struct ArrayStepper<T: Hashable>: View {
             config.labelColor = labelColor ?? config.labelColor
             config.valueColor = valueColor ?? config.valueColor
             config.valuesAreUnique = valuesAreUnique ?? config.valuesAreUnique
-            config.valuesContainValue = valuesContainValue ?? config.valuesContainValue
             config.selectedCheck = selectedCheck ?? config.selectedCheck
         
         // Assign bindings
@@ -110,18 +108,16 @@ public struct ArrayStepper<T: Hashable>: View {
                 }
             }
             
-            // Ensure values contains the selected value
-            if !config.valuesContainValue {
-                if let selectedIndex = values.firstIndex(of: selected) {
-                    index = selectedIndex
-                } else {
-                    switch config.selectedCheck {
-                        case .Fail : fatalError("Initial selected value not found for ArrayStepper, please confirm your selected value exists in your values array.")
-                        case .First : index = 0
-                        case .Append :
-                            values.append(selected)
-                            index = values.lastIndex
-                    }
+            // Set initial value
+            if let selectedIndex = values.firstIndex(of: selected) {
+                index = selectedIndex
+            } else {
+                switch config.selectedCheck {
+                    case .Fail : fatalError("Initial selected value not found for ArrayStepper, please confirm your selected value exists in your values array.")
+                    case .First : index = 0
+                    case .Append :
+                        values.append(selected)
+                        index = values.lastIndex
                 }
             }
         }
