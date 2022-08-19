@@ -2,6 +2,10 @@
 ![Untitled](https://user-images.githubusercontent.com/8194147/184554947-383ae35d-4c3e-4b37-bbfe-d4f06cef1c66.gif)
 A simple SwiftUI component for stepping through the contents of an array. This package is very similar to [TextFieldStepper](https://github.com/joe-scotto/textfieldstepper.git) sharing both similar functionality (except for arrays) and styling. `ArrayStepper` also features long press gestures for incrementing or decrementing the value.
 
+# Contents
+1. [Platforms](#Platforms)
+2. [Usage](#Usage)
+
 # Platforms
 Tested on iOS 16.0 but should work on both iOS and iPadOS 15 and up.
 
