@@ -5,6 +5,13 @@ A simple SwiftUI component for stepping through the contents of an array. This p
 # Contents
 1. [Platforms](#Platforms)
 2. [Usage](#Usage)
+3. [Advanced](#Advanced)
+4. [Uniqueness](#Uniqueness)
+5. [Selected](#Selected)
+6. [Customizing](#Customizing)
+7. [Parameters](#Parameters)
+8. [Styling](#Styling)
+9. [License](#License)
 
 # Platforms
 Tested on iOS 16.0 but should work on both iOS and iPadOS 15 and up.
@@ -61,7 +68,7 @@ struct ContentView: View {
 # Uniqueness
 `ArrayStepper` expects arrays be unique when passed in, meaning, no values repeat. It would completely defeat the purpose of using this component if you could select one of multiple of the same value. In order to ensure the `values` array is unique, `ArrayStepper` utilizes a custom filter by default with `O(n)` complexity. If you know for certain the `values` are unique, you can disable this to improve performance with the `valuesAreUnique` parameter. Please keep in mind that if you do disable this and the `values` are not unique, visual bugs can occur.
 
-# Initial Value
+# Selected
 By default, `ArrayStepper` will try setting `selected` by finding the first index of `selected` in the `values`. There are three ways `ArrayStepper` will handle setting `selected` if not found in the `values` and can be specified with the `selectedCheck` parameter.
 
 1. **.Fail** - Throws a `fatalError()` if the `selected` is not found in `values` and is the default setting.
