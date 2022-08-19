@@ -22,7 +22,6 @@ struct ArrayStepperList<T: Hashable>: View {
                     ForEach(section.items, id: \.self) { item in
                         Button(action: {
                             selected = item
-                            print(item)
                             dismiss()
                         }) {
                             HStack {

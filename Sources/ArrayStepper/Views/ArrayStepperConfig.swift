@@ -9,7 +9,8 @@ public struct ArrayStepperConfig {
     var labelOpacity: Double
     var labelColor: Color
     var valueColor: Color
-    var findClosestMatch: Bool
+    var valuesAreUnique: Bool
+    var valuesContainValue: Bool
 
     public init (
         label: String = "",
@@ -20,7 +21,8 @@ public struct ArrayStepperConfig {
         labelOpacity: Double = 1.0,
         labelColor: Color = .primary,
         valueColor: Color = .primary,
-        findClosestMatch: Bool = false
+        valuesAreUnique: Bool = false,
+        valuesContainValue: Bool = false
     ) {
         self.label = label
         self.incrementSpeed = incrementSpeed
@@ -30,6 +32,7 @@ public struct ArrayStepperConfig {
         self.labelOpacity = labelOpacity
         self.labelColor = labelColor
         self.valueColor = valueColor
-        self.findClosestMatch = findClosestMatch
+        self.valuesAreUnique = valuesAreUnique
+        self.valuesContainValue = valuesContainValue
     }
 }
