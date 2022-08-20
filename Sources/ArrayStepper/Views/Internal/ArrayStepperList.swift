@@ -4,13 +4,13 @@ struct ArrayStepperList<T: Hashable>: View {
     @Environment(\.dismiss) var dismiss
     
     @Binding var selected: T
+    @Binding var sections: [ArrayStepperSection<T>]
     
-    var sections: [ArrayStepperSection<T>]
-    var display: (T) -> String
+    let display: (T) -> String
     
-    init(selected: Binding<T>, sections: [ArrayStepperSection<T>], display: @escaping (T) -> String) {
+    init(selected: Binding<T>, sections: Binding<[ArrayStepperSection<T>]>, display: @escaping (T) -> String) {
         self._selected = selected
-        self.sections = sections
+        self._sections = sections
         self.display = display
     }
     
@@ -18,7 +18,6 @@ struct ArrayStepperList<T: Hashable>: View {
         List {
             ForEach(sections, id: \.self) { section in
                 Section(section.header) {
-                    
                     ForEach(section.items, id: \.self) { item in
                         Button(action: {
                             selected = item
