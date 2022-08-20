@@ -4,19 +4,17 @@ public struct ArrayStepper<T: Hashable>: View {
     @Binding var selected: T
     @Binding var values: [T]
     
-    private var sections: [ArrayStepperSection<T>]
-    
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
     @State private var index: Int = 0
+    @State private var sections: [ArrayStepperSection<T>]
     
-    private var display: (T) -> String
+    private let display: (T) -> String
     private let config: ArrayStepperConfig
     
     public init(
         selected: Binding<T>,
-        values: Binding<[T]>,
-        sections: [ArrayStepperSection<T>]? = nil,
+        values: Binding<[ArrayStepperSection<T>]>,
         display: @escaping (T) -> String = { "\($0)" },
         label: String? = nil,
         incrementSpeed: Double? = nil,
@@ -45,58 +43,22 @@ public struct ArrayStepper<T: Hashable>: View {
         
         // Assign bindings
         self._selected = selected
-        self._values = values
+        self._sections = State(initialValue: values.wrappedValue)
+        
+        self._values = Binding(
+            get: {
+                values.wrappedValue[0].items
+            },
+            set: {
+                self.values = $0
+            }
+        )
         
         // Assign properties
-        self.sections = sections != nil ? sections! : [ArrayStepperSection(header: config.label, items: _values.wrappedValue)] // Document sections
         self.display = display
         self.config = config
     }
     
-    public init(
-        selected: Binding<T>,
-        sections: [ArrayStepperSection<T>],
-        display: @escaping (T) -> String = { "\($0)" },
-        label: String? = nil,
-        incrementSpeed: Double? = nil,
-        decrementImage: ArrayStepperImage? = nil,
-        incrementImage: ArrayStepperImage? = nil,
-        disabledColor: Color? = nil,
-        labelOpacity: Double? = nil,
-        labelColor: Color? = nil,
-        valueColor: Color? = nil,
-        valuesAreUnique: Bool? = nil,
-        selectedCheck: SelectedCheck? = nil,
-        config: ArrayStepperConfig = ArrayStepperConfig()
-    ) {
-        self.init(
-            selected: selected,
-            values: Binding.constant({
-                // Convert sections to values
-                var combinedItems = [T]()
-                
-                for section in sections {
-                    combinedItems += section.items
-                }
-                
-                return combinedItems
-            }()),
-            sections: sections,
-            display: display,
-            label: label,
-            incrementSpeed: incrementSpeed,
-            decrementImage: decrementImage,
-            incrementImage: incrementImage,
-            disabledColor: disabledColor,
-            labelOpacity: labelOpacity,
-            labelColor: labelColor,
-            valueColor: valueColor,
-            valuesAreUnique: valuesAreUnique,
-            selectedCheck: selectedCheck,
-            config: config
-        )
-    }
-
     public var body: some View {
         HStack {
             LongPressButton(
@@ -115,7 +77,7 @@ public struct ArrayStepper<T: Hashable>: View {
                     display(values[index]),
                     destination: ArrayStepperList(
                         selected: $selected,
-                        sections: sections,
+                        sections: $sections,
                         display: display
                     )
                 )
@@ -164,6 +126,8 @@ public struct ArrayStepper<T: Hashable>: View {
             }
         }
         .onChange(of: selected) { _ in
+            // index not updated when appended
+            
             // Set index of selected from list
             if let updatedIndex = values.firstIndex(of: selected) {
                 index = updatedIndex
