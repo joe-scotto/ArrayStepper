@@ -3,24 +3,26 @@ import SwiftUI
 struct ArrayStepperList<T: Hashable>: View {
     @Environment(\.dismiss) var dismiss
     
-    @Binding var selected: T
-    @Binding var sections: [ArrayStepperSection<T>]
+    @ObservedObject var values: ArrayStepperValues<T>
     
-    let display: (T) -> String
+    var display: (T) -> String
     
-    init(selected: Binding<T>, sections: Binding<[ArrayStepperSection<T>]>, display: @escaping (T) -> String) {
-        self._selected = selected
-        self._sections = sections
+    init(values: ArrayStepperValues<T>,
+         display: @escaping (T) -> String
+    ) {
+        self.values = values
         self.display = display
     }
     
     var body: some View {
         List {
-            ForEach(sections, id: \.self) { section in
+            ForEach(values.sections, id: \.self) { section in
                 Section(section.header) {
+                    
                     ForEach(section.items, id: \.self) { item in
                         Button(action: {
-                            selected = item
+                            print(item)
+                            values.selected = item
                             dismiss()
                         }) {
                             HStack {
@@ -28,7 +30,7 @@ struct ArrayStepperList<T: Hashable>: View {
                                 
                                 Spacer()
                                 
-                                if selected == item {
+                                if values.selected == item {
                                     Image(systemName: "checkmark")
                                 }
                             }
@@ -38,6 +40,9 @@ struct ArrayStepperList<T: Hashable>: View {
             }
         }
         .listStyle(InsetGroupedListStyle())
-        .navigationTitle(Text(display(selected)))
+        .navigationTitle(Text(display(values.selected)))
+        .onAppear { 
+//            print("ArrayStepperList: \($sections[0].items.count)")
+        }
     }
 }
