@@ -1,20 +1,17 @@
 import SwiftUI
 
 public struct ArrayStepper<T: Hashable>: View {
-    @Binding var selected: T
-    @Binding var values: [T]
+    @ObservedObject var values: ArrayStepperValues<T>
     
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
     @State private var index: Int = 0
-    @State private var sections: [ArrayStepperSection<T>]
     
-    private let display: (T) -> String
+    private var display: (T) -> String
     private let config: ArrayStepperConfig
     
     public init(
-        selected: Binding<T>,
-        values: Binding<[ArrayStepperSection<T>]>,
+        values: ArrayStepperValues<T>,
         display: @escaping (T) -> String = { "\($0)" },
         label: String? = nil,
         incrementSpeed: Double? = nil,
@@ -41,29 +38,17 @@ public struct ArrayStepper<T: Hashable>: View {
             config.valuesAreUnique = valuesAreUnique ?? config.valuesAreUnique
             config.selectedCheck = selectedCheck ?? config.selectedCheck
         
-        // Assign bindings
-        self._selected = selected
-        self._sections = State(initialValue: values.wrappedValue)
-        
-        self._values = Binding(
-            get: {
-                values.wrappedValue[0].items
-            },
-            set: {
-                self.values = $0
-            }
-        )
-        
         // Assign properties
+        self.values = values
         self.display = display
         self.config = config
     }
-    
+
     public var body: some View {
         HStack {
             LongPressButton(
-                selected: $selected,
-                values: $values,
+                selected: $values.selected,
+                values: $values.values,
                 index: $index,
                 config: config,
                 image: config.decrementImage,
@@ -74,16 +59,12 @@ public struct ArrayStepper<T: Hashable>: View {
             
             VStack {
                 NavigationLink(
-                    display(values[index]),
-                    destination: ArrayStepperList(
-                        selected: $selected,
-                        sections: $sections,
-                        display: display
-                    )
+                    display(values.values[index]),
+                    destination: ArrayStepperList(values: values, display: display)
                 )
                 .font(.system(size: 24, weight: .black))
                 .foregroundColor(config.valueColor)
-                
+
                 if !config.label.isEmpty {
                     Text(config.label)
                         .font(.footnote)
@@ -96,41 +77,41 @@ public struct ArrayStepper<T: Hashable>: View {
             Spacer()
             
             LongPressButton(
-                selected: $selected,
-                values: $values,
+                selected: $values.selected,
+                values: $values.values,
                 index: $index,
                 config: config,
                 image: config.incrementImage,
                 action: .increment
             )
         }
+        .onChange(of: values.selected) { _ in
+            print(values.selected)
+            print(values)
+            // Set index of selected from list
+            if let updatedIndex = values.values.firstIndex(of: values.selected) {
+                index = updatedIndex
+            }
+        }
         .onAppear {
             // Ensure values are unique
             if !config.valuesAreUnique {
-                let uniqueValues = values.unique()
+                let uniqueValues = values.values.unique()
                 
-                if values != uniqueValues {
-                    values = uniqueValues
+                if values.values != uniqueValues {
+                    values.values = uniqueValues
                 }
             }
             
             // Set initial value
-            if let selectedIndex = values.firstIndex(of: selected) {
+            if let selectedIndex = values.values.firstIndex(of: values.selected) {
                 index = selectedIndex
             } else {
                 switch config.selectedCheck {
                     case .Fail : fatalError("Initial selected value not found for \(config.label) ArrayStepper, please confirm your selected value exists in your values array.")
                     case .First : index = 0
-                    case .Append : values.append(selected); index = values.lastIndex
+                    case .Append : values.values.append(values.selected); index = values.values.lastIndex
                 }
-            }
-        }
-        .onChange(of: selected) { _ in
-            // index not updated when appended
-            
-            // Set index of selected from list
-            if let updatedIndex = values.firstIndex(of: selected) {
-                index = updatedIndex
             }
         }
     }
