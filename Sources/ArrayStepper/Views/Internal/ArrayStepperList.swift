@@ -3,25 +3,26 @@ import SwiftUI
 struct ArrayStepperList<T: Hashable>: View {
     @Environment(\.dismiss) var dismiss
     
-    @Binding var selected: T
+    @ObservedObject var values: ArrayStepperValues<T>
     
-    var sections: [ArrayStepperSection<T>]
     var display: (T) -> String
     
-    init(selected: Binding<T>, sections: [ArrayStepperSection<T>], display: @escaping (T) -> String) {
-        self._selected = selected
-        self.sections = sections
+    init(values: ArrayStepperValues<T>,
+         display: @escaping (T) -> String
+    ) {
+        self.values = values
         self.display = display
     }
     
     var body: some View {
         List {
-            ForEach(sections, id: \.self) { section in
+            ForEach(values.sections, id: \.self) { section in
                 Section(section.header) {
                     
                     ForEach(section.items, id: \.self) { item in
                         Button(action: {
-                            selected = item
+                            print(item)
+                            values.selected = item
                             dismiss()
                         }) {
                             HStack {
@@ -29,7 +30,7 @@ struct ArrayStepperList<T: Hashable>: View {
                                 
                                 Spacer()
                                 
-                                if selected == item {
+                                if values.selected == item {
                                     Image(systemName: "checkmark")
                                 }
                             }
@@ -39,6 +40,9 @@ struct ArrayStepperList<T: Hashable>: View {
             }
         }
         .listStyle(InsetGroupedListStyle())
-        .navigationTitle(Text(display(selected)))
+        .navigationTitle(Text(display(values.selected)))
+        .onAppear { 
+//            print("ArrayStepperList: \($sections[0].items.count)")
+        }
     }
 }
