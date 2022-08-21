@@ -1,6 +1,6 @@
 # ArrayStepper
 ![Untitled](https://user-images.githubusercontent.com/8194147/184554947-383ae35d-4c3e-4b37-bbfe-d4f06cef1c66.gif)
-A simple SwiftUI component for stepping through the contents of an array. This package is very similar to [TextFieldStepper](https://github.com/joe-scotto/textfieldstepper.git) sharing both similar functionality (except for arrays) and styling. `ArrayStepper` also features long press gestures for incrementing or decrementing the value.
+A simple SwiftUI component for stepping through the contents of an array. Features long press gestures to increment or decrement the selected value along with a list view of all available values for selection. Very similar to [TextFieldStepper](https://github.com/joe-scotto/textfieldstepper.git) sharing both similar functionality and styling.
 
 # Contents
 1. [Platforms](#Platforms)
@@ -72,6 +72,7 @@ struct ContentView: View {
 By default, `ArrayStepper` will try setting `selected` by finding the first index of `selected` in the `values`. There are three ways `ArrayStepper` will handle setting `selected` if not found in the `values` and can be specified with the `selectedCheck` parameter.
 
 1. **.Fail** - Throws a `fatalError()` if the `selected` is not found in `values` and is the default setting.
+  - Keep in mind if `values` changes and the `selected` is not found, `fatalError()` will still be thrown.
 2. **.First** - Sets the `selected` to the first value found in `values`.
 3. **.Append** - Appends `selected` to `values` and sets `selected` to the last element in `values`.
 
@@ -156,6 +157,34 @@ You can override the default images by creating an instance of `ArrayStepperImag
     ``` swift 
     let image = ArrayStepperImage(image: Image(systemName: "circle.fill")
     ```
+
+# Sections
+If you have multiple groups of data, you can use an array of `ArrayStepperSection` to create difference sections in the list. 
+``` swift
+struct ContentView: View {
+    @State var selected = Person(name: "Joe", age: 23)
+    
+    @State private var sections = [
+        ArrayStepperSection(header: "Siblings", items: [
+            Person(name: "Joe", age: 23),
+            Person(name: "Tommy", age: 20)
+        ]),
+        ArrayStepperSection(header: "Parents", items: [
+            Person(name: "Joe", age: nil),
+            Person(name: "Kandy", age: nil)
+        ])
+    ]
+    
+    var body: some View {
+        ArrayStepper(
+            selected: $selected,
+            sections: $sections,
+            display: { "\($0.name): \($0.age ?? 0)" },
+            label: "Person"
+        )
+    }
+}
+``` 
 
 # License
 MIT License
