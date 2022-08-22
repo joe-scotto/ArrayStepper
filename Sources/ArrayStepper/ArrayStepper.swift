@@ -7,7 +7,7 @@ public struct ArrayStepper<T: Hashable>: View {
     @State private var isLongPressing = false
     @State private var index: Int = 0
     
-    private var display: (T) -> String
+    private let display: (T) -> String
     private let config: ArrayStepperConfig
     
     public init(
@@ -42,6 +42,14 @@ public struct ArrayStepper<T: Hashable>: View {
         self.values = values
         self.display = display
         self.config = config
+        
+        if values.values is Array<String> {
+            print("Array contains strings")
+        }
+        
+        // if array type is ASValue... don't check if unique
+        // Remove unique type check
+        // Leave selectedCheck.
     }
 
     public var body: some View {
