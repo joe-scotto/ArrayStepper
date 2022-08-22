@@ -68,6 +68,11 @@ struct ContentView: View {
 # Uniqueness
 `ArrayStepper` expects arrays be unique when passed in, meaning, no values repeat. It would completely defeat the purpose of using this component if you could select one of multiple of the same value. In order to ensure the `values` array is unique, `ArrayStepper` utilizes a custom filter by default with `O(n)` complexity. If you know for certain the `values` are unique, you can disable this to improve performance with the `valuesAreUnique` parameter. Please keep in mind that if you do disable this and the `values` are not unique, visual bugs can occur.
 
+`ArrayStepper` does have a custom type if you want to use multiple identical values, although this is not recommended. Simply define your values with the 
+
+```
+```
+
 # Selected
 By default, `ArrayStepper` will try setting `selected` by finding the first index of `selected` in the `values`. There are three ways `ArrayStepper` will handle setting `selected` if not found in the `values` and can be specified with the `selectedCheck` parameter.
 

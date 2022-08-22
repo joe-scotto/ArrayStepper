@@ -5,14 +5,7 @@ struct ArrayStepperList<T: Hashable>: View {
     
     @ObservedObject var values: ArrayStepperValues<T>
     
-    var display: (T) -> String
-    
-    init(values: ArrayStepperValues<T>,
-         display: @escaping (T) -> String
-    ) {
-        self.values = values
-        self.display = display
-    }
+    let display: (T) -> String
     
     var body: some View {
         List {
@@ -21,7 +14,6 @@ struct ArrayStepperList<T: Hashable>: View {
                     
                     ForEach(section.items, id: \.self) { item in
                         Button(action: {
-                            print(item)
                             values.selected = item
                             dismiss()
                         }) {
@@ -41,8 +33,5 @@ struct ArrayStepperList<T: Hashable>: View {
         }
         .listStyle(InsetGroupedListStyle())
         .navigationTitle(Text(display(values.selected)))
-        .onAppear { 
-//            print("ArrayStepperList: \($sections[0].items.count)")
-        }
     }
 }
