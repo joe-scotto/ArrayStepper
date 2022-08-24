@@ -13,6 +13,7 @@ public struct ArrayStepper<T: Hashable>: View {
     public init(
         values: ArrayStepperValues<T>,
         display: @escaping (T) -> String = { "\($0)" },
+        initialValue: Int = 0,
         label: String? = nil,
         incrementSpeed: Double? = nil,
         decrementImage: ArrayStepperImage? = nil,
@@ -21,7 +22,6 @@ public struct ArrayStepper<T: Hashable>: View {
         labelOpacity: Double? = nil,
         labelColor: Color? = nil,
         valueColor: Color? = nil,
-        valuesAreUnique: Bool? = nil,
         selectedCheck: SelectedCheck? = nil,
         config: ArrayStepperConfig = ArrayStepperConfig()
     ) {
@@ -35,21 +35,13 @@ public struct ArrayStepper<T: Hashable>: View {
             config.labelOpacity = labelOpacity ?? config.labelOpacity
             config.labelColor = labelColor ?? config.labelColor
             config.valueColor = valueColor ?? config.valueColor
-            config.valuesAreUnique = valuesAreUnique ?? config.valuesAreUnique
             config.selectedCheck = selectedCheck ?? config.selectedCheck
         
         // Assign properties
         self.values = values
+        self.index = initialValue
         self.display = display
         self.config = config
-        
-        if values.values is Array<String> {
-            print("Array contains strings")
-        }
-        
-        // if array type is ASValue... don't check if unique
-        // Remove unique type check
-        // Leave selectedCheck.
     }
 
     public var body: some View {
@@ -67,7 +59,7 @@ public struct ArrayStepper<T: Hashable>: View {
             
             VStack {
                 NavigationLink(
-                    display(values.values[index]),
+                    display(values.values[index].item),
                     destination: ArrayStepperList(values: values, display: display)
                 )
                 .font(.system(size: 24, weight: .black))
@@ -94,25 +86,14 @@ public struct ArrayStepper<T: Hashable>: View {
             )
         }
         .onChange(of: values.selected) { _ in
-            print(values.selected)
-            print(values)
             // Set index of selected from list
-            if let updatedIndex = values.values.firstIndex(of: values.selected) {
+            if let updatedIndex = values.values.firstIndex(of: values.values[index]) {
                 index = updatedIndex
             }
         }
         .onAppear {
-            // Ensure values are unique
-            if !config.valuesAreUnique {
-                let uniqueValues = values.values.unique()
-                
-                if values.values != uniqueValues {
-                    values.values = uniqueValues
-                }
-            }
-            
             // Set initial value
-            if let selectedIndex = values.values.firstIndex(of: values.selected) {
+            if let selectedIndex = values.values.firstIndex(of: values.values[index]) {
                 index = selectedIndex
             } else {
                 switch config.selectedCheck {
