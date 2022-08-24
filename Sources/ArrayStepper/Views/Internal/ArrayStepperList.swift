@@ -11,10 +11,9 @@ struct ArrayStepperList<T: Hashable>: View {
         List {
             ForEach(values.sections, id: \.self) { section in
                 Section(section.header) {
-                    
                     ForEach(section.items, id: \.self) { item in
                         Button(action: {
-                            values.selected = item
+                            values.selected.item = item
                             dismiss()
                         }) {
                             HStack {
@@ -22,7 +21,7 @@ struct ArrayStepperList<T: Hashable>: View {
                                 
                                 Spacer()
                                 
-                                if values.selected == item {
+                                if values.selected.item == item {
                                     Image(systemName: "checkmark")
                                 }
                             }
@@ -32,6 +31,6 @@ struct ArrayStepperList<T: Hashable>: View {
             }
         }
         .listStyle(InsetGroupedListStyle())
-        .navigationTitle(Text(display(values.selected)))
+        .navigationTitle(Text(display(values.selected.item)))
     }
 }

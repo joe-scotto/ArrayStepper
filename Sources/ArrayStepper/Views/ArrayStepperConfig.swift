@@ -9,7 +9,6 @@ public struct ArrayStepperConfig {
     var labelOpacity: Double
     var labelColor: Color
     var valueColor: Color
-    var valuesAreUnique: Bool
     var selectedCheck: SelectedCheck
     
     public init (
@@ -21,7 +20,6 @@ public struct ArrayStepperConfig {
         labelOpacity: Double = 1.0,
         labelColor: Color = .primary,
         valueColor: Color = .primary,
-        valuesAreUnique: Bool = false,
         selectedCheck: SelectedCheck = .Fail
     ) {
         self.label = label
@@ -32,7 +30,6 @@ public struct ArrayStepperConfig {
         self.labelOpacity = labelOpacity
         self.labelColor = labelColor
         self.valueColor = valueColor
-        self.valuesAreUnique = valuesAreUnique
         self.selectedCheck = selectedCheck
     }
 }
