@@ -60,7 +60,7 @@ public struct ArrayStepper<T: Hashable>: View {
             VStack {
                 NavigationLink(
                     display(values.values[index].item),
-                    destination: ArrayStepperList(values: values, display: display)
+                    destination: ArrayStepperList(values: values, index: $index, display: display)
                 )
                 .font(.system(size: 24, weight: .black))
                 .foregroundColor(config.valueColor)
@@ -86,6 +86,7 @@ public struct ArrayStepper<T: Hashable>: View {
             )
         }
         .onChange(of: values.selected) { _ in
+            print("Selected has changed. \(values.selected)")
             // Set index of selected from list
             if let updatedIndex = values.values.firstIndex(of: values.values[index]) {
                 index = updatedIndex
