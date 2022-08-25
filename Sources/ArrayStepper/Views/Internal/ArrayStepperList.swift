@@ -4,6 +4,9 @@ struct ArrayStepperList<T: Hashable>: View {
     @Environment(\.dismiss) var dismiss
     
     @ObservedObject var values: ArrayStepperValues<T>
+//    @Binding var selected: T
+    
+    @Binding var index: Int
     
     let display: (T) -> String
     
@@ -14,6 +17,11 @@ struct ArrayStepperList<T: Hashable>: View {
                     ForEach(section.items, id: \.self) { item in
                         Button(action: {
                             values.selected = item
+                            
+                            if let selectedIndex = values.values.firstIndex(of: item) {
+                                index = selectedIndex
+                            }
+                            
                             dismiss()
                         }) {
                             HStack {
