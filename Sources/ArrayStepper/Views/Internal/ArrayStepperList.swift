@@ -13,15 +13,15 @@ struct ArrayStepperList<T: Hashable>: View {
                 Section(section.header) {
                     ForEach(section.items, id: \.self) { item in
                         Button(action: {
-                            values.selected.item = item
+                            values.selected = item
                             dismiss()
                         }) {
                             HStack {
-                                Text(display(item))
+                                Text(display(item.item))
                                 
                                 Spacer()
                                 
-                                if values.selected.item == item {
+                                if values.selected == item {
                                     Image(systemName: "checkmark")
                                 }
                             }
