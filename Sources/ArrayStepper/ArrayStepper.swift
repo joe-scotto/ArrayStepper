@@ -42,6 +42,8 @@ public struct ArrayStepper<T: Hashable>: View {
         self.index = initialValue
         self.display = display
         self.config = config
+        
+        // If [ASValue] don't check / cast
     }
 
     public var body: some View {
@@ -86,7 +88,6 @@ public struct ArrayStepper<T: Hashable>: View {
             )
         }
         .onChange(of: values.selected) { _ in
-            print("Selected has changed. \(values.selected)")
             // Set index of selected from list
             if let updatedIndex = values.values.firstIndex(of: values.values[index]) {
                 index = updatedIndex
