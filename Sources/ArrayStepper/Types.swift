@@ -1,5 +1,14 @@
 import SwiftUI
 
+public struct ASValue<T: Hashable>: Hashable {
+    private let id = UUID()
+    var item: T
+    
+    public init(item: T) {
+        self.item = item
+    }
+}
+
 public struct ArrayStepperSection<T: Hashable>: Hashable {
     public let header: String
     public var items: [ASValue<T>]
@@ -7,15 +16,6 @@ public struct ArrayStepperSection<T: Hashable>: Hashable {
     public init(header: String = "", items: [ASValue<T>]) {
         self.header = header
         self.items = items
-    }
-}
-
-public struct ASValue<T: Hashable>: Hashable {
-    private let id = UUID()
-    var item: T
-    
-    public init(item: T) {
-        self.item = item
     }
 }
 
@@ -40,6 +40,14 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
     }
 
     public func hash(into hasher: inout Hasher) {
+        hasher.combine(values)
+        hasher.combine(selected)
         hasher.combine(sections)
     }
+}
+
+public enum SelectedCheck {
+    case Fail,
+         First,
+         Append
 }
