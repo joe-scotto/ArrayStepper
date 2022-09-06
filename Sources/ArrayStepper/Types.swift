@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct ASValue<T: Hashable>: Hashable {
     private let id = UUID()
-    var item: T
+    public var item: T
     
     public init(item: T) {
         self.item = item
@@ -23,26 +23,48 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
     @Published public var values: [ASValue<T>]
     @Published public var selected: ASValue<T>
     @Published public var sections: [ArrayStepperSection<T>]
+    @Published public var raw: T
     
-    public init(values: [ASValue<T>], selected: ASValue<T>, sections: [ArrayStepperSection<T>]? = nil) {
-        self.values = values
-        self.selected = selected
+    public init(selected: T, values: [T], sections: [ArrayStepperSection<T>]? = nil) {
+        // take selected and store it for later
+        // Find first instance of selected
+        // values can be nil but then you must provide sections
+        // sections will be formatted into values if no values provided
+    
         
-        if sections != nil {
-            self.sections = sections!
-        } else {
-            self.sections = [ArrayStepperSection(items: values)]
-        }
+        
+        let selectedIndex = values.firstIndex(of: selected) ?? 0
+        let asValues = values.asCast()
+        
+        
+        self.values = asValues
+        self.selected = asValues[selectedIndex]
+        self.sections = sections != nil ? sections! : [ArrayStepperSection(items: asValues)]
+        self.raw = asValues[selectedIndex].item
     }
     
     public static func == (lhs: ArrayStepperValues<T>, rhs: ArrayStepperValues<T>) -> Bool {
         return lhs.sections == rhs.sections
     }
-
+    
     public func hash(into hasher: inout Hasher) {
         hasher.combine(values)
         hasher.combine(selected)
         hasher.combine(sections)
+    }
+    
+    private static func conformValues(_ values: [T], selected: T) -> [ASValue<T>] {
+        // get first index of selected
+        // abide by selectedcheck rules
+//        if let selectedIndex = values.firstIndex(of: selected) {
+//            selected =
+//        }
+        
+        if let asValues = values as? [ASValue<T>] {
+            return asValues
+        } else {
+            return values.asCast()
+        }
     }
 }
 

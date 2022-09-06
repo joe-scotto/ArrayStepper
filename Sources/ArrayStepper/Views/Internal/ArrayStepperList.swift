@@ -4,7 +4,6 @@ struct ArrayStepperList<T: Hashable>: View {
     @Environment(\.dismiss) var dismiss
     
     @ObservedObject var values: ArrayStepperValues<T>
-//    @Binding var selected: T
     
     @Binding var index: Int
     

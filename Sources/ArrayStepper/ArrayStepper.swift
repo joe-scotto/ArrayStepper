@@ -42,7 +42,7 @@ public struct ArrayStepper<T: Hashable>: View {
         self.index = initialValue
         self.display = display
         self.config = config
-        
+    
         // If [ASValue] don't check / cast
     }
 
@@ -61,7 +61,7 @@ public struct ArrayStepper<T: Hashable>: View {
             
             VStack {
                 NavigationLink(
-                    display(values.values[index].item),
+                    display(values.raw),
                     destination: ArrayStepperList(values: values, index: $index, display: display)
                 )
                 .font(.system(size: 24, weight: .black))
@@ -89,19 +89,23 @@ public struct ArrayStepper<T: Hashable>: View {
         }
         .onChange(of: values.selected) { _ in
             // Set index of selected from list
-            if let updatedIndex = values.values.firstIndex(of: values.values[index]) {
+            if let updatedIndex = values.values.firstIndex(of: values.selected) {
                 index = updatedIndex
+                values.raw = values.selected.item
             }
         }
         .onAppear {
             // Set initial value
-            if let selectedIndex = values.values.firstIndex(of: values.values[index]) {
+            if let selectedIndex = values.values.firstIndex(of: values.selected) {
                 index = selectedIndex
+                values.raw = values.selected.item
             } else {
                 switch config.selectedCheck {
                     case .Fail : fatalError("Initial selected value not found for \(config.label) ArrayStepper, please confirm your selected value exists in your values array.")
                     case .First : index = 0
-                    case .Append : values.values.append(values.selected); index = values.values.lastIndex
+                    case .Append :
+                        values.values.append(values.selected)
+                        index = values.values.endIndex - 1
                 }
             }
         }
