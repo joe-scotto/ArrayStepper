@@ -66,7 +66,7 @@ struct LongPressButton<T: Hashable>: View {
             case .decrement:
                 shouldDisable = index == 0
             case .increment:
-                shouldDisable = index == values.lastIndex
+                shouldDisable = values[index] == values.last
         }
         
         return shouldDisable
@@ -82,7 +82,7 @@ struct LongPressButton<T: Hashable>: View {
             updateSelected()
             
             // If value after action is outside of constraints, stop long press
-            if index == 0 || index == values.lastIndex {
+            if index == 0 || values[index] == values.last {
                 invalidateLongPress()
             }
         }
