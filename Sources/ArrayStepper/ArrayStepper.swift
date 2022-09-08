@@ -1,10 +1,15 @@
 import SwiftUI
 
+public struct ASValue<T: Hashable> {
+    private var id = UUID()
+    public let item: T
+}
+
 public struct ArrayStepper<T: Hashable>: View {
     @Binding var selected: T
     @Binding var values: [T]
     
-    private var sections: [ArrayStepperSection<T>]
+    @State private var sections: [ArrayStepperSection<T>]
     
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
@@ -49,9 +54,9 @@ public struct ArrayStepper<T: Hashable>: View {
         
         // Assign properties
         if let sections {
-            self.sections = sections.wrappedValue
+            self._sections = State(initialValue: sections.wrappedValue)
         } else {
-            self.sections = [ArrayStepperSection(header: config.label, items: _values.wrappedValue)]
+            self._sections = State(initialValue: [ArrayStepperSection(header: config.label, items: _values.wrappedValue)])
         }
 
         self.display = display
@@ -130,5 +135,12 @@ public struct ArrayStepper<T: Hashable>: View {
                 index = updatedIndex
             }
         }
+        .onChange(of: values, perform: { _ in
+            print("add")
+            if sections.count == 1 {
+                print("add 2")
+                self.sections = [ArrayStepperSection(header: config.label, items: values)]
+            }
+        })
     }
 }
