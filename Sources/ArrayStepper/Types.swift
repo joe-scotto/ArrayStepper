@@ -23,7 +23,6 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
     @Published public var values: [ASValue<T>]
     @Published public var selected: ASValue<T>
     @Published public var sections: [ArrayStepperSection<T>]
-    @Published public var raw: T
     
     public init(selected: T, values: [T], sections: [ArrayStepperSection<T>]? = nil) {
         // take selected and store it for later
@@ -40,7 +39,6 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
         self.values = asValues
         self.selected = asValues[selectedIndex]
         self.sections = sections != nil ? sections! : [ArrayStepperSection(items: asValues)]
-        self.raw = asValues[selectedIndex].item
     }
     
     public static func == (lhs: ArrayStepperValues<T>, rhs: ArrayStepperValues<T>) -> Bool {
