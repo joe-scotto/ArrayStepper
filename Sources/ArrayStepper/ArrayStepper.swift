@@ -7,14 +7,14 @@ public struct ArrayStepper<T: Hashable>: View {
     @State private var isLongPressing = false
     @State private var index: Int = 0
     
-    @Binding private var selected: T
+//    @Binding private var selected: T
+//    @Binding private var values: [T]
     
     private let display: (T) -> String
     private let config: ArrayStepperConfig
     
     public init(
-        selected: Binding<T>,
-        values: Binding<[T]>,
+        values: ArrayStepperValues<T>,
         display: @escaping (T) -> String = { "\($0)" },
         label: String? = nil,
         incrementSpeed: Double? = nil,
@@ -41,22 +41,19 @@ public struct ArrayStepper<T: Hashable>: View {
         
         
         // Compose values
-        let asValues = ArrayStepperValues(
-            selected: selected.wrappedValue,
-            values: values.wrappedValue,
-            config: config
-        )
-//        asValues.config = config
+//        let asValues = ArrayStepperValues(
+//            selected: selected.wrappedValue,
+//            values: values.wrappedValue,
+//            config: config
+//        )
         
         
         // Assign properties
-        self._selected = selected
-        self.asValues = asValues
+//        self._selected = selected
+//        self._values = values
+        self.asValues = values
         self.display = display
         self.config = config
-//        self.values.config = config
-    
-        // If [ASValue] don't check / cast
     }
 
     public var body: some View {
@@ -98,11 +95,23 @@ public struct ArrayStepper<T: Hashable>: View {
                 action: .increment
             )
         }
+        .onChange(of: asValues.values, perform: { _ in
+            print("changed")
+            index = index
+            asValues.sections = [ArrayStepperSection(items: asValues.values)]
+        })
+//        .onChange(of: values, perform: { _ in
+//            print(values.last)
+//            asValues.values.append(ASValue(item: values.last!))
+//
+//            // Gross binding of index to force list update
+//            index = index
+//        })
         .onChange(of: asValues.selected) { _ in
-            // Set index of selected from list
+            // Set index of selected from list
             if let updatedIndex = asValues.values.firstIndex(of: asValues.selected) {
                 index = updatedIndex
-                selected = asValues.selected.item
+                asValues.selected = asValues.selected
             }
         }
     }

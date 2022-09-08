@@ -37,6 +37,9 @@ struct ArrayStepperList<T: Hashable>: View {
                 }
             }
         }
+        .onAppear {
+            print("Shown")
+        }
         .listStyle(InsetGroupedListStyle())
         .navigationTitle(Text(display(values.selected.item)))
     }
