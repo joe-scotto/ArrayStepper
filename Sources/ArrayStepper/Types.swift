@@ -24,9 +24,12 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
     @Published public var selected: ASValue<T>
     @Published public var sections: [ArrayStepperSection<T>]
     
-    public var config: ArrayStepperConfig = ArrayStepperConfig()
-    
-    public init(selected: T, values: [T], sections: [ArrayStepperSection<T>]? = nil) {
+    public init(
+        selected: T,
+        values: [T],
+        sections: [ArrayStepperSection<T>]? = nil,
+        config: ArrayStepperConfig
+    ) {
         // take selected and store it for later
         // Find first instance of selected
         // values can be nil but then you must provide sections

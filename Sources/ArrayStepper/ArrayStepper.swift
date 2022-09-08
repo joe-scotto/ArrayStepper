@@ -7,11 +7,14 @@ public struct ArrayStepper<T: Hashable>: View {
     @State private var isLongPressing = false
     @State private var index: Int = 0
     
+    @Binding private var selected: T
+    
     private let display: (T) -> String
     private let config: ArrayStepperConfig
     
     public init(
-        values: ArrayStepperValues<T>,
+        selected: Binding<T>,
+        values: Binding<[T]>,
         display: @escaping (T) -> String = { "\($0)" },
         label: String? = nil,
         incrementSpeed: Double? = nil,
@@ -36,9 +39,19 @@ public struct ArrayStepper<T: Hashable>: View {
             config.valueColor = valueColor ?? config.valueColor
             config.selectedCheck = selectedCheck ?? config.selectedCheck
         
-        // Assign properties
-        self.asValues = values
         
+        // Compose values
+        let asValues = ArrayStepperValues(
+            selected: selected.wrappedValue,
+            values: values.wrappedValue,
+            config: config
+        )
+//        asValues.config = config
+        
+        
+        // Assign properties
+        self._selected = selected
+        self.asValues = asValues
         self.display = display
         self.config = config
 //        self.values.config = config
@@ -89,6 +102,7 @@ public struct ArrayStepper<T: Hashable>: View {
             // Set index of selected from list
             if let updatedIndex = asValues.values.firstIndex(of: asValues.selected) {
                 index = updatedIndex
+                selected = asValues.selected.item
             }
         }
     }
