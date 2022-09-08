@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct LongPressButton<T: Hashable>: View {
-    @ObservedObject var values: ArrayStepperValues<T>
+    @ObservedObject var asValues: ArrayStepperValues<T>
     @Binding var index: Int
     
     @State private var timer: Timer? = nil
@@ -17,7 +17,7 @@ struct LongPressButton<T: Hashable>: View {
     private let action: Action
     
     init(
-        values: ArrayStepperValues<T>,
+        asValues: ArrayStepperValues<T>,
         index: Binding<Int>,
         config: ArrayStepperConfig,
         image: ArrayStepperImage,
@@ -25,7 +25,7 @@ struct LongPressButton<T: Hashable>: View {
     ) {
         self._index = index
         
-        self.values = values
+        self.asValues = asValues
         self.config = config
         self.image = image
         self.action = action
@@ -64,7 +64,7 @@ struct LongPressButton<T: Hashable>: View {
             case .decrement:
                 shouldDisable = index == 0
             case .increment:
-                shouldDisable = values.values[index] == values.values.last
+                shouldDisable = asValues.values[index] == asValues.values.last
         }
         
         return shouldDisable
@@ -80,7 +80,7 @@ struct LongPressButton<T: Hashable>: View {
             updateSelected()
             
             // If value after action is outside of constraints, stop long press
-            if index == 0 || values.values[index] == values.values.last {
+            if index == 0 || asValues.values[index] == asValues.values.last {
                 invalidateLongPress()
             }
         }
@@ -100,9 +100,9 @@ struct LongPressButton<T: Hashable>: View {
             }
     
         // Verify the new index will be in the values array
-        if values.values.indices.contains(newIndex) {
+        if asValues.values.indices.contains(newIndex) {
             index = newIndex
-            values.selected = values.values[index]
+            asValues.selected = asValues.values[index]
         }
     }
 }
