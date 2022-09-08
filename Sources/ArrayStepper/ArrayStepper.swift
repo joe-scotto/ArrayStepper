@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct ArrayStepper<T: Hashable>: View {
-    @ObservedObject var values: ArrayStepperValues<T>
+    @ObservedObject var asValues: ArrayStepperValues<T>
     
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
@@ -37,7 +37,7 @@ public struct ArrayStepper<T: Hashable>: View {
             config.selectedCheck = selectedCheck ?? config.selectedCheck
         
         // Assign properties
-        self.values = values
+        self.asValues = values
         
         self.display = display
         self.config = config
@@ -49,7 +49,7 @@ public struct ArrayStepper<T: Hashable>: View {
     public var body: some View {
         HStack {
             LongPressButton(
-                values: values,
+                asValues: asValues,
                 index: $index,
                 config: config,
                 image: config.decrementImage,
@@ -60,8 +60,8 @@ public struct ArrayStepper<T: Hashable>: View {
             
             VStack {
                 NavigationLink(
-                    display(values.selected.item),
-                    destination: ArrayStepperList(values: values, index: $index, display: display)
+                    display(asValues.selected.item),
+                    destination: ArrayStepperList(values: asValues, index: $index, display: display)
                 )
                 .font(.system(size: 24, weight: .black))
                 .foregroundColor(config.valueColor)
@@ -78,16 +78,16 @@ public struct ArrayStepper<T: Hashable>: View {
             Spacer()
             
             LongPressButton(
-                values: values,
+                asValues: asValues,
                 index: $index,
                 config: config,
                 image: config.incrementImage,
                 action: .increment
             )
         }
-        .onChange(of: values.selected) { _ in
+        .onChange(of: asValues.selected) { _ in
             // Set index of selected from list
-            if let updatedIndex = values.values.firstIndex(of: values.selected) {
+            if let updatedIndex = asValues.values.firstIndex(of: asValues.selected) {
                 index = updatedIndex
             }
         }
