@@ -49,8 +49,7 @@ public struct ArrayStepper<T: Hashable>: View {
     public var body: some View {
         HStack {
             LongPressButton(
-                selected: $values.selected,
-                values: $values.values,
+                values: values,
                 index: $index,
                 config: config,
                 image: config.decrementImage,
@@ -79,8 +78,7 @@ public struct ArrayStepper<T: Hashable>: View {
             Spacer()
             
             LongPressButton(
-                selected: $values.selected,
-                values: $values.values,
+                values: values,
                 index: $index,
                 config: config,
                 image: config.incrementImage,
