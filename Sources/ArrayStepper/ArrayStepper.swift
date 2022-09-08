@@ -52,50 +52,6 @@ public struct ArrayStepper<T: Hashable>: View {
         self.display = display
         self.config = config
     }
-    
-    public init(
-        selected: Binding<T>,
-        sections: [ArrayStepperSection<T>],
-        display: @escaping (T) -> String = { "\($0)" },
-        label: String? = nil,
-        incrementSpeed: Double? = nil,
-        decrementImage: ArrayStepperImage? = nil,
-        incrementImage: ArrayStepperImage? = nil,
-        disabledColor: Color? = nil,
-        labelOpacity: Double? = nil,
-        labelColor: Color? = nil,
-        valueColor: Color? = nil,
-        valuesAreUnique: Bool? = nil,
-        selectedCheck: SelectedCheck? = nil,
-        config: ArrayStepperConfig = ArrayStepperConfig()
-    ) {
-        self.init(
-            selected: selected,
-            values: Binding.constant({
-                // Convert sections to values
-                var combinedItems = [T]()
-                
-                for section in sections {
-                    combinedItems += section.items
-                }
-                
-                return combinedItems
-            }()),
-            sections: sections,
-            display: display,
-            label: label,
-            incrementSpeed: incrementSpeed,
-            decrementImage: decrementImage,
-            incrementImage: incrementImage,
-            disabledColor: disabledColor,
-            labelOpacity: labelOpacity,
-            labelColor: labelColor,
-            valueColor: valueColor,
-            valuesAreUnique: valuesAreUnique,
-            selectedCheck: selectedCheck,
-            config: config
-        )
-    }
 
     public var body: some View {
         HStack {
@@ -112,7 +68,7 @@ public struct ArrayStepper<T: Hashable>: View {
             
             VStack {
                 NavigationLink(
-                    display(values[index]),
+                    display(selected),
                     destination: ArrayStepperList(
                         selected: $selected,
                         sections: sections,
