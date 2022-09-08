@@ -13,7 +13,6 @@ public struct ArrayStepper<T: Hashable>: View {
     public init(
         values: ArrayStepperValues<T>,
         display: @escaping (T) -> String = { "\($0)" },
-        initialValue: Int = 0,
         label: String? = nil,
         incrementSpeed: Double? = nil,
         decrementImage: ArrayStepperImage? = nil,
@@ -39,9 +38,10 @@ public struct ArrayStepper<T: Hashable>: View {
         
         // Assign properties
         self.values = values
-        self.index = initialValue
+        
         self.display = display
         self.config = config
+//        self.values.config = config
     
         // If [ASValue] don't check / cast
     }
@@ -91,20 +91,6 @@ public struct ArrayStepper<T: Hashable>: View {
             // Set index of selected from list
             if let updatedIndex = values.values.firstIndex(of: values.selected) {
                 index = updatedIndex
-            }
-        }
-        .onAppear {
-            // Set initial value
-            if let selectedIndex = values.values.firstIndex(of: values.selected) {
-                index = selectedIndex
-            } else {
-                switch config.selectedCheck {
-                    case .Fail : fatalError("Initial selected value not found for \(config.label) ArrayStepper, please confirm your selected value exists in your values array.")
-                    case .First : index = 0
-                    case .Append :
-                        values.values.append(values.selected)
-                        index = values.values.endIndex - 1
-                }
             }
         }
     }
