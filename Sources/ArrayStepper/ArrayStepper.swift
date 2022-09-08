@@ -16,7 +16,7 @@ public struct ArrayStepper<T: Hashable>: View {
     public init(
         selected: Binding<T>,
         values: Binding<[T]>,
-        sections: [ArrayStepperSection<T>]? = nil,
+        sections: Binding<[ArrayStepperSection<T>]>? = nil,
         display: @escaping (T) -> String = { "\($0)" },
         label: String? = nil,
         incrementSpeed: Double? = nil,
@@ -48,7 +48,12 @@ public struct ArrayStepper<T: Hashable>: View {
         self._values = values
         
         // Assign properties
-        self.sections = sections != nil ? sections! : [ArrayStepperSection(header: config.label, items: _values.wrappedValue)] // Document sections
+        if let sections {
+            self.sections = sections.wrappedValue
+        } else {
+            self.sections = [ArrayStepperSection(header: config.label, items: _values.wrappedValue)]
+        }
+
         self.display = display
         self.config = config
     }
