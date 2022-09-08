@@ -27,8 +27,8 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
     public init(
         selected: T,
         values: [T],
-        sections: [ArrayStepperSection<T>]? = nil,
-        config: ArrayStepperConfig
+        sections: [ArrayStepperSection<T>]? = nil
+//        config: ArrayStepperConfig
     ) {
         // take selected and store it for later
         // Find first instance of selected
@@ -39,21 +39,35 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
         
         var index: Int
         var values = values
+
         
         if let selectedIndex = values.firstIndex(of: selected) {
             index = selectedIndex
         } else {
-            switch config.selectedCheck {
-                case .Fail : fatalError("Initial selected value not found for \(config.label) ArrayStepper, please confirm your selected value exists in your values array.")
-                case .First : index = 0
-                case .Append :
-                    values.append(selected)
-                    index = values.endIndex - 1
-            }
+            index = 0
+//             values.append(selected)
+//            index = values.endIndex - 1
+            
+//            switch config.selectedCheck {
+//                case .Fail : fatalError("Initial selected value not found for \(config.label) ArrayStepper, please confirm your selected value exists in your values array.")
+//                case .First : index = 0
+//                case .Append :
+//                    values.append(selected)
+//                    index = values.endIndex - 1
+//            }
         }
         
-        // Set properties
         let asValues = values.asCast()
+        
+        // Don't cast if they already are ASValue
+//        if !(values is [ASValue<T>]) || !(selected is ASValue<T>) {
+//            asValues = values.asCast()
+//        } else {
+//            asValues = values as! [ASValue<T>]
+//        }
+        
+        // Set properties
+        
 
         
         self.values = asValues
