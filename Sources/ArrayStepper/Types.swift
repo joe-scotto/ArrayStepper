@@ -24,6 +24,8 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
     @Published public var selected: ASValue<T>
     @Published public var sections: [ArrayStepperSection<T>]
     
+    public var config: ArrayStepperConfig = ArrayStepperConfig()
+    
     public init(selected: T, values: [T], sections: [ArrayStepperSection<T>]? = nil) {
         // take selected and store it for later
         // Find first instance of selected
@@ -32,12 +34,27 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
     
         
         
-        let selectedIndex = values.firstIndex(of: selected) ?? 0
-        let asValues = values.asCast()
+        var index: Int
+        var values = values
         
+        if let selectedIndex = values.firstIndex(of: selected) {
+            index = selectedIndex
+        } else {
+            switch config.selectedCheck {
+                case .Fail : fatalError("Initial selected value not found for \(config.label) ArrayStepper, please confirm your selected value exists in your values array.")
+                case .First : index = 0
+                case .Append :
+                    values.append(selected)
+                    index = values.endIndex - 1
+            }
+        }
+        
+        // Set properties
+        let asValues = values.asCast()
+
         
         self.values = asValues
-        self.selected = asValues[selectedIndex]
+        self.selected = asValues[index]
         self.sections = sections != nil ? sections! : [ArrayStepperSection(items: asValues)]
     }
     
@@ -49,20 +66,6 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
         hasher.combine(values)
         hasher.combine(selected)
         hasher.combine(sections)
-    }
-    
-    private static func conformValues(_ values: [T], selected: T) -> [ASValue<T>] {
-        // get first index of selected
-        // abide by selectedcheck rules
-//        if let selectedIndex = values.firstIndex(of: selected) {
-//            selected =
-//        }
-        
-        if let asValues = values as? [ASValue<T>] {
-            return asValues
-        } else {
-            return values.asCast()
-        }
     }
 }
 
