@@ -3,12 +3,7 @@ import SwiftUI
 public struct ArrayStepper<T: Hashable>: View {
     @ObservedObject var asValues: ArrayStepperValues<T>
     
-    @State private var timer: Timer? = nil
-    @State private var isLongPressing = false
     @State private var index: Int = 0
-    
-//    @Binding private var selected: T
-//    @Binding private var values: [T]
     
     private let display: (T) -> String
     private let config: ArrayStepperConfig
@@ -40,17 +35,6 @@ public struct ArrayStepper<T: Hashable>: View {
             config.selectedCheck = selectedCheck ?? config.selectedCheck
         
         
-        // Compose values
-//        let asValues = ArrayStepperValues(
-//            selected: selected.wrappedValue,
-//            values: values.wrappedValue,
-//            config: config
-//        )
-        
-        
-        // Assign properties
-//        self._selected = selected
-//        self._values = values
         self.asValues = values
         self.display = display
         self.config = config
@@ -100,13 +84,6 @@ public struct ArrayStepper<T: Hashable>: View {
             index = index
             asValues.sections = [ArrayStepperSection(items: asValues.values)]
         })
-//        .onChange(of: values, perform: { _ in
-//            print(values.last)
-//            asValues.values.append(ASValue(item: values.last!))
-//
-//            // Gross binding of index to force list update
-//            index = index
-//        })
         .onChange(of: asValues.selected) { _ in
             // Set index of selected from list
             if let updatedIndex = asValues.values.firstIndex(of: asValues.selected) {
