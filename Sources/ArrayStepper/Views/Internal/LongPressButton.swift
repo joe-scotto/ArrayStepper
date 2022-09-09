@@ -2,7 +2,6 @@ import SwiftUI
 
 struct LongPressButton<T: Hashable>: View {
     @ObservedObject var asValues: ArrayStepperValues<T>
-    @Binding var index: Int
     
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
@@ -18,13 +17,10 @@ struct LongPressButton<T: Hashable>: View {
     
     init(
         asValues: ArrayStepperValues<T>,
-        index: Binding<Int>,
         config: ArrayStepperConfig,
         image: ArrayStepperImage,
         action: Action
     ) {
-        self._index = index
-        
         self.asValues = asValues
         self.config = config
         self.image = image
@@ -62,9 +58,9 @@ struct LongPressButton<T: Hashable>: View {
         
         switch action {
             case .decrement:
-                shouldDisable = index == 0
+                shouldDisable = asValues.index == 0
             case .increment:
-                shouldDisable = asValues.values[index] == asValues.values.last
+                shouldDisable = asValues.values[asValues.index] == asValues.values.last
         }
         
         return shouldDisable
@@ -80,7 +76,7 @@ struct LongPressButton<T: Hashable>: View {
             updateSelected()
             
             // If value after action is outside of constraints, stop long press
-            if index == 0 || asValues.values[index] == asValues.values.last {
+            if asValues.index == 0 || asValues.values[asValues.index] == asValues.values.last {
                 invalidateLongPress()
             }
         }
@@ -94,15 +90,15 @@ struct LongPressButton<T: Hashable>: View {
         
         switch action {
             case .decrement :
-                newIndex = index - 1
+                newIndex = asValues.index - 1
             case .increment :
-                newIndex = index + 1
+                newIndex = asValues.index + 1
             }
     
         // Verify the new index will be in the values array
         if asValues.values.indices.contains(newIndex) {
-            index = newIndex
-            asValues.selected = asValues.values[index]
+            asValues.index = newIndex
+            asValues.selected = asValues.values[asValues.index]
         }
     }
 }

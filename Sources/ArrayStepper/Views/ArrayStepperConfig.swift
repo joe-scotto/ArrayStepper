@@ -9,7 +9,6 @@ public struct ArrayStepperConfig {
     var labelOpacity: Double
     var labelColor: Color
     var valueColor: Color
-    var selectedCheck: SelectedCheck
     
     public init (
         label: String = "",
@@ -19,8 +18,7 @@ public struct ArrayStepperConfig {
         disabledColor: Color = Color(UIColor.lightGray),
         labelOpacity: Double = 1.0,
         labelColor: Color = .primary,
-        valueColor: Color = .primary,
-        selectedCheck: SelectedCheck = .Fail
+        valueColor: Color = .primary
     ) {
         self.label = label
         self.incrementSpeed = incrementSpeed
@@ -30,6 +28,5 @@ public struct ArrayStepperConfig {
         self.labelOpacity = labelOpacity
         self.labelColor = labelColor
         self.valueColor = valueColor
-        self.selectedCheck = selectedCheck
     }
 }
