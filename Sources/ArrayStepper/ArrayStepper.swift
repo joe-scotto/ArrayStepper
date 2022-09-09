@@ -3,8 +3,6 @@ import SwiftUI
 public struct ArrayStepper<T: Hashable>: View {
     @ObservedObject var asValues: ArrayStepperValues<T>
     
-//    @State private var index: Int = 0
-    
     private let display: (T) -> String
     private let config: ArrayStepperConfig
     
@@ -32,7 +30,7 @@ public struct ArrayStepper<T: Hashable>: View {
             config.labelColor = labelColor ?? config.labelColor
             config.valueColor = valueColor ?? config.valueColor
         
-        
+        // Assign properties
         self.asValues = values
         self.display = display
         self.config = config
@@ -76,8 +74,12 @@ public struct ArrayStepper<T: Hashable>: View {
             )
         }
         .onChange(of: asValues.values, perform: { _ in
-            print("changed")
-            asValues.index = asValues.index
+            // When sections or values change, set index to index found where ID matches.
+            
+            print("Values Changed")
+            // Need to update sections
+            
+            asValues.index = asValues.values.indices.filter({ asValues.values[$0].id == asValues.selected.id }).first ?? 0
             asValues.sections = [ArrayStepperSection(items: asValues.values)]
         })
         .onChange(of: asValues.selected) { _ in

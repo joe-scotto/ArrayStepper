@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct ASValue<T: Hashable>: Hashable {
-    private let id = UUID()
+    public let id = UUID()
     public var item: T
     
     public init(item: T) {
@@ -31,6 +31,8 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
         sections: [ArrayStepperSection<T>]? = nil,
         missingCheck: MissingCheck = .Fail
     ) {
+        print("init ran again")
+        
         // take selected and store it for later
         // Find first instance of selected
         // values can be nil but then you must provide sections
@@ -56,6 +58,8 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
                     index = values.endIndex - 1
             }
         }
+        
+        
         
         let asValues = values.asCast()
         
