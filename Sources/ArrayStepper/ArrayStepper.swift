@@ -1,18 +1,10 @@
 import SwiftUI
 
-public struct ASValue<T: Hashable> {
-    private var id = UUID()
-    public let item: T
-}
-
 public struct ArrayStepper<T: Hashable>: View {
     @Binding var selected: T
     @Binding var values: [T]
-    
-    @State private var sections: [ArrayStepperSection<T>]
-    
-    @State private var timer: Timer? = nil
-    @State private var isLongPressing = false
+    @Binding var sections: [ArrayStepperSection<T>]
+
     @State private var index: Int = 0
     
     private var display: (T) -> String
@@ -21,7 +13,7 @@ public struct ArrayStepper<T: Hashable>: View {
     public init(
         selected: Binding<T>,
         values: Binding<[T]>,
-        sections: Binding<[ArrayStepperSection<T>]>? = nil,
+        sections: Binding<[ArrayStepperSection<T>]>,
         display: @escaping (T) -> String = { "\($0)" },
         label: String? = nil,
         incrementSpeed: Double? = nil,
@@ -51,14 +43,9 @@ public struct ArrayStepper<T: Hashable>: View {
         // Assign bindings
         self._selected = selected
         self._values = values
+        self._sections = sections
         
         // Assign properties
-        if let sections {
-            self._sections = State(initialValue: sections.wrappedValue)
-        } else {
-            self._sections = State(initialValue: [ArrayStepperSection(header: config.label, items: _values.wrappedValue)])
-        }
-
         self.display = display
         self.config = config
     }
@@ -135,11 +122,9 @@ public struct ArrayStepper<T: Hashable>: View {
                 index = updatedIndex
             }
         }
-        .onChange(of: values, perform: { _ in
-            print("add")
-            if sections.count == 1 {
-                print("add 2")
-                self.sections = [ArrayStepperSection(header: config.label, items: values)]
+        .onChange(of: sections, perform: { _ in
+            if let updatedIndex = values.firstIndex(of: selected) {
+                index = updatedIndex
             }
         })
     }
