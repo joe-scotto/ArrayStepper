@@ -23,18 +23,22 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
     @Published public var values: [ASValue<T>]
     @Published public var selected: ASValue<T>
     @Published public var sections: [ArrayStepperSection<T>]
+    @Published public var index: Int
     
     public init(
         selected: T,
         values: [T],
-        sections: [ArrayStepperSection<T>]? = nil
-//        config: ArrayStepperConfig
+        sections: [ArrayStepperSection<T>]? = nil,
+        missingCheck: MissingCheck = .Fail
     ) {
         // take selected and store it for later
         // Find first instance of selected
         // values can be nil but then you must provide sections
         // sections will be formatted into values if no values provided
     
+        
+        // convert to asvalue array
+        // Find by ID in that array
         
         
         var index: Int
@@ -44,17 +48,13 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
         if let selectedIndex = values.firstIndex(of: selected) {
             index = selectedIndex
         } else {
-            index = 0
-//             values.append(selected)
-//            index = values.endIndex - 1
-            
-//            switch config.selectedCheck {
-//                case .Fail : fatalError("Initial selected value not found for \(config.label) ArrayStepper, please confirm your selected value exists in your values array.")
-//                case .First : index = 0
-//                case .Append :
-//                    values.append(selected)
-//                    index = values.endIndex - 1
-//            }
+            switch missingCheck {
+                case .Fail : fatalError("Initial selected value not found for ArrayStepper, please confirm your selected value exists in your values array.")
+                case .First : index = 0
+                case .Append :
+                    values.append(selected)
+                    index = values.endIndex - 1
+            }
         }
         
         let asValues = values.asCast()
@@ -67,10 +67,8 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
 //        }
         
         // Set properties
-        
-
-        
         self.values = asValues
+        self.index = index
         self.selected = asValues[index]
         self.sections = sections != nil ? sections! : [ArrayStepperSection(items: asValues)]
     }
@@ -86,7 +84,7 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
     }
 }
 
-public enum SelectedCheck {
+public enum MissingCheck {
     case Fail,
          First,
          Append

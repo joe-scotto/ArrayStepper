@@ -3,7 +3,7 @@ import SwiftUI
 public struct ArrayStepper<T: Hashable>: View {
     @ObservedObject var asValues: ArrayStepperValues<T>
     
-    @State private var index: Int = 0
+//    @State private var index: Int = 0
     
     private let display: (T) -> String
     private let config: ArrayStepperConfig
@@ -19,7 +19,6 @@ public struct ArrayStepper<T: Hashable>: View {
         labelOpacity: Double? = nil,
         labelColor: Color? = nil,
         valueColor: Color? = nil,
-        selectedCheck: SelectedCheck? = nil,
         config: ArrayStepperConfig = ArrayStepperConfig()
     ) {
         // Compose config
@@ -32,7 +31,6 @@ public struct ArrayStepper<T: Hashable>: View {
             config.labelOpacity = labelOpacity ?? config.labelOpacity
             config.labelColor = labelColor ?? config.labelColor
             config.valueColor = valueColor ?? config.valueColor
-            config.selectedCheck = selectedCheck ?? config.selectedCheck
         
         
         self.asValues = values
@@ -44,7 +42,6 @@ public struct ArrayStepper<T: Hashable>: View {
         HStack {
             LongPressButton(
                 asValues: asValues,
-                index: $index,
                 config: config,
                 image: config.decrementImage,
                 action: .decrement
@@ -55,7 +52,7 @@ public struct ArrayStepper<T: Hashable>: View {
             VStack {
                 NavigationLink(
                     display(asValues.selected.item),
-                    destination: ArrayStepperList(values: asValues, index: $index, display: display)
+                    destination: ArrayStepperList(asValues: asValues, display: display)
                 )
                 .font(.system(size: 24, weight: .black))
                 .foregroundColor(config.valueColor)
@@ -73,7 +70,6 @@ public struct ArrayStepper<T: Hashable>: View {
             
             LongPressButton(
                 asValues: asValues,
-                index: $index,
                 config: config,
                 image: config.incrementImage,
                 action: .increment
@@ -81,13 +77,13 @@ public struct ArrayStepper<T: Hashable>: View {
         }
         .onChange(of: asValues.values, perform: { _ in
             print("changed")
-            index = index
+            asValues.index = asValues.index
             asValues.sections = [ArrayStepperSection(items: asValues.values)]
         })
         .onChange(of: asValues.selected) { _ in
             // Set index of selected from list
             if let updatedIndex = asValues.values.firstIndex(of: asValues.selected) {
-                index = updatedIndex
+                asValues.index = updatedIndex
                 asValues.selected = asValues.selected
             }
         }
