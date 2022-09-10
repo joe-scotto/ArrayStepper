@@ -25,10 +25,16 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
     @Published public var sections: [ArrayStepperSection<T>]
     @Published public var index: Int
     
-    public init(
+    private init(selected: ASValue<T>, values: [ASValue<T>], sections: [ArrayStepperSection<T>], index: Int) {
+        self.selected = selected
+        self.values = values
+        self.sections = sections
+        self.index = index
+    }
+    
+    public convenience init(
         selected: T,
         values: [T],
-        sections: [ArrayStepperSection<T>]? = nil,
         missingCheck: MissingCheck = .Fail
     ) {
         print("init ran again")
@@ -59,8 +65,6 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
             }
         }
         
-        
-        
         let asValues = values.asCast()
         
         // Don't cast if they already are ASValue
@@ -71,11 +75,22 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
 //        }
         
         // Set properties
-        self.values = asValues
-        self.index = index
-        self.selected = asValues[index]
-        self.sections = sections != nil ? sections! : [ArrayStepperSection(items: asValues)]
+        
+        self.init(
+            selected: asValues[index],
+            values: asValues,
+            sections: [ArrayStepperSection(items: asValues)],
+            index: index
+        )
     }
+    
+//    public convenience init(
+//        selected: T,
+//        sections: [ArrayStepperSection<T>]? = nil,
+//        missingCheck: MissingCheck = .Fail
+//    ) {
+//
+//    }
     
     public static func == (lhs: ArrayStepperValues<T>, rhs: ArrayStepperValues<T>) -> Bool {
         return lhs.sections == rhs.sections
