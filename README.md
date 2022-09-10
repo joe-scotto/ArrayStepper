@@ -73,7 +73,7 @@ struct ContentView: View {
 ```
 ```
 
-# Selected
+# Selected Value
 By default, `ArrayStepper` will try setting `selected` by finding the first index of `selected` in the `values`. There are three ways `ArrayStepper` will handle setting `selected` if not found in the `values` and can be specified with the `selectedCheck` parameter.
 
 1. **.Fail** - Throws a `fatalError()` if the `selected` is not found in `values` and is the default setting.
