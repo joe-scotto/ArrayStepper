@@ -37,8 +37,6 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
         values: [T],
         missingCheck: MissingCheck = .Fail
     ) {
-        print("init ran again")
-        
         // take selected and store it for later
         // Find first instance of selected
         // values can be nil but then you must provide sections
