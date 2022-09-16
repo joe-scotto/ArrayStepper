@@ -4,7 +4,7 @@ public struct ASValue<T: Hashable>: Hashable {
     public let id = UUID()
     public var item: T
     
-    public init(item: T) {
+    public init(_ item: T) {
         self.item = item
     }
 }
@@ -78,14 +78,15 @@ public class ArrayStepperValues<T: Hashable>: Hashable, ObservableObject {
         // Values must all be the same type... check
         var values = [T]()
         var formattedSections = [ASSection<T>]()
+        var index: Int
+        var asValues: [ASValue<T>]
 
         for section in sections {
+            // section items need to be stored as asvalues and raw in order to sort them.
+            
             formattedSections.append(ASSection(header: section.header, items: section.items.asCast()))
             values.append(contentsOf: section.items)
         }
-
-        var index: Int
-        var asValues: [ASValue<T>]
 
         if let selectedIndex = values.firstIndex(of: selected) {
             index = selectedIndex
