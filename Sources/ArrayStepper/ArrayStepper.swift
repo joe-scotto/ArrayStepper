@@ -80,7 +80,7 @@ public struct ArrayStepper<T: Hashable>: View {
             // Need to update sections
             
             asValues.index = asValues.values.indices.filter({ asValues.values[$0].id == asValues.selected.id }).first ?? 0
-            asValues.sections = [ArrayStepperSection(items: asValues.values)]
+            asValues.sections = [ASSection(items: asValues.values)]
         })
         .onChange(of: asValues.selected) { _ in
             // Set index of selected from list
@@ -91,3 +91,21 @@ public struct ArrayStepper<T: Hashable>: View {
         }
     }
 }
+
+//struct ArrayStepper_Previews: PreviewProvider {
+//    @StateObject private var values = ArrayStepperValues(
+//        selected: "Joe",
+//        values: [
+//            "Tommy",
+//            "Joe",
+//            "Kandy"
+//        ]
+//    )
+//
+//    static var previews: some View {
+//        ArrayStepper(
+//            values: values,
+//            label: "Person"
+//        )
+//    }
+//}
