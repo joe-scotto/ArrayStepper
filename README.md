@@ -6,7 +6,7 @@ A simple SwiftUI component for stepping through the contents of an array. Featur
 
 # Contents
 
-- [ArrayStepper](#arraystepper)
+- [ArrayStepper (WIP - Releasing soon...)](#arraystepper-wip---releasing-soon)
 - [Contents](#contents)
 - [Platforms](#platforms)
 - [Usage](#usage)
@@ -27,7 +27,7 @@ Tested on iOS 16.0 but should work on both iOS and iPadOS 15 and up.
 
 # Usage
 
-Creating an `ArrayStepper` is simple. Refer to [advanced](#Advanced) and [sections](#Sections) for other ways of creating an `ArrayStepper`.
+Creating a basic `ArrayStepper` is simple. Refer to [advanced](#Advanced) and [sections](#Sections) for other ways of creating an `ArrayStepper`.
 
 ```swift
 struct ContentView: View {
