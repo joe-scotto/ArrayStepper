@@ -6,20 +6,18 @@ A simple SwiftUI component for stepping through the contents of an array. Featur
 
 # Contents
 
-- [ArrayStepper (WIP - Releasing soon...)](#arraystepper-wip---releasing-soon)
-- [Contents](#contents)
-- [Platforms](#platforms)
-- [Usage](#usage)
-- [Advanced](#advanced)
-- [Uniqueness](#uniqueness)
-- [Selected](#selected)
-- [Appending](#appending)
-- [Customizing](#customizing)
-- [Sections](#sections)
-- [Parameters](#parameters)
-- [Styling](#styling)
-- [SwiftUI](#swiftui)
-- [License](#license)
+1. [Platforms](#platforms)
+2. [Usage](#usage)
+3. [Advanced](#advanced)
+4. [Uniqueness](#uniqueness)
+5. [Selected](#selected)
+6. [Appending](#appending)
+7. [Customizing](#customizing)
+8. [Sections](#sections)
+9. [Parameters](#parameters)
+10. [Styling](#styling)
+11. [SwiftUI](#swiftui)
+12. [License](#license)
 
 # Platforms
 
