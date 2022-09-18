@@ -51,7 +51,7 @@ struct ContentView: View {
 
 # Advanced
 
-By default, `ArrayStepper` can accept anything that conforms to `Equatable`. This should be fine in most cases but there may be times where you want to pass in more complex types such as custom structs. This is where the `display` parameter becomes necessary in order to define what value to show.
+By default, `ArrayStepper` can accept anything that conforms to `Equatable`. This should be fine in most cases but there may be times where you want to pass in more complex types such as custom structs. This is where the `display` parameter becomes necessary in order to define what value to show. By default if this parameter is not defined and a struct is passed, `ArrayStepper` will just print out the entire object.
 
 ```swift
 struct Person {
@@ -119,7 +119,7 @@ In order to access the value of `selected` you need to access `selected.item` as
 
 # Appending
 
-You can do any number of operations on the `values` array as you would expect. The only restriction is that values must be passed as `ASValue` since after you create the `ArrayStepper` all values are converted to this type. Keep in mind that `ArrayStepper` still follows the setting for [selected](#selected).
+You can do any number of operations on `ArrayStepperValues.values` as you would expect for an array. The only restriction is that values must be passed as `ASValue` since after you create the `ArrayStepper` all values are converted to this type. Also keep in mind that `ArrayStepper` still follows the setting for [selected](#selected).
 
 ```swift
     @StateObject private var values = ArrayStepperValues(
@@ -145,7 +145,7 @@ You can do any number of operations on the `values` array as you would expect. T
 
 # Customizing
 
-The defaults should be fine for most situations but there are certainly cases where they won't be. There are two methods that will allow you to change these [parameters](#parameters).
+Although the defaults should be fine for most situations, there are cases where they won't be. `ArrayStepper` has two ways of changing the default [parameters](#parameters).
 
 1. If you just want to modify a single component, you can directly pass in the parameter name and value.
 
@@ -274,7 +274,7 @@ In Xcode 14 you may get a SwiftUI warning that reads the following:
 
 > [SwiftUI] Publishing changes from within view updates is not allowed, this will cause undefined behavior.
 
-There is some speculation online whether or not this is an actual error or a bug but from all my testing, nothing seems to be out of the ordinary. Just keep this in mind if you get unexpected results.
+There is some speculation whether or not this is an actual error or a bug but from all my testing, nothing seems to be out of the ordinary. Just keep this in mind if you get unexpected results.
 
 # License
 
