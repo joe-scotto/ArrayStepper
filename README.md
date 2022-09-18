@@ -2,6 +2,7 @@
 
 ![Untitled]()
 ###image here
+
 A simple SwiftUI component for stepping through the contents of an array. Features long press gestures to increment or decrement the selected value along with a list view of all available values for selection. Very similar to [TextFieldStepper](https://github.com/joe-scotto/textfieldstepper.git) sharing both similar functionality and styling.
 
 # Contents
