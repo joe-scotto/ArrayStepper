@@ -80,7 +80,7 @@ struct ContentView: View {
 
 # Uniqueness
 
-In order to combat issues with multiple values that are the same, `ArrayStepper` uses a custom type `ASValue` to convert everything into a unique value. This is a complexity of `O(n)` as each value has to manually be cast to this custom type. In most situations this shouldn't slow anything down but if you want to skip this cast, you can just pass everything in as 'ASValue'. Keep in mind if you create the `ArrayStepper` this way, your selected value must be stored as variable in order to ensure the ID matches in the `values` array.
+In order to combat issues with multiple values that are the same, `ArrayStepper` uses a custom type `ASValue` to convert everything into a unique value. This is a complexity of `O(n)` as each value has to manually be cast to this custom type. In most situations this shouldn't slow anything down but if you want to skip this cast, you can just pass everything in as `ASValue`. Keep in mind if you create the `ArrayStepper` this way, your selected value must be stored as variable in order to ensure the ID matches in the `values` array.
 
 ```swift
     @StateObject private var values: ArrayStepperValues<ASValue<String>>
@@ -236,16 +236,16 @@ struct ContentView: View {
 
 Below are the parameters available on both `ArrayStepper` and `ArrayStepperConfig`.
 
-| Parameter      | Type              | Default                                            | Note                                              |
-| -------------- | ----------------- | -------------------------------------------------- | ------------------------------------------------- |
-| label          | String            | “”                                                 | Label to show under value.                        |
-| incrementSpeed | Double            | 0.25                                               | How many seconds before the button action is ran. |
-| decrementImage | ArrayStepperImage | ArrayStepperImage(systemName: "minus.circle.fill") | Image for decrement button.                       |
-| incrementImage | ArrayStepperImage | ArrayStepperImage(systemName: "plus.circle.fill")  | Image for increment button.                       |
-| disabledColor  | Color             | Color(UIColor.lightGray)                           | Color of disabled button.                         |
-| labelOpacity   | Double            | 1.0                                                | Opacity of label under value.                     |
-| labelColor     | Color             | .primary                                           | Color of label under value.                       |
-| valueColor     | Color             | .primary                                           | Color of value.                                   |
+| Parameter      | Type              | Default                                            | Note                                                            |
+| -------------- | ----------------- | -------------------------------------------------- | --------------------------------------------------------------- |
+| label          | String            | “”                                                 | Label to show under value.                                      |
+| incrementSpeed | Double            | 0.25                                               | How many seconds before the button action is ran while holding. |
+| decrementImage | ArrayStepperImage | ArrayStepperImage(systemName: "minus.circle.fill") | Image for decrement button.                                     |
+| incrementImage | ArrayStepperImage | ArrayStepperImage(systemName: "plus.circle.fill")  | Image for increment button.                                     |
+| disabledColor  | Color             | Color(UIColor.lightGray)                           | Color of disabled button.                                       |
+| labelOpacity   | Double            | 1.0                                                | Opacity of label under value.                                   |
+| labelColor     | Color             | .primary                                           | Color of label under value.                                     |
+| valueColor     | Color             | .primary                                           | Color of value.                                                 |
 
 # Styling
 
