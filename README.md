@@ -215,8 +215,7 @@ struct ContentView: View {
             ASSection(
                 header: "Parents",
                 items: [
-                    Person(name: "Joe", age: nil),
-                    Person(name: "James", age: nil)
+                    Person(name: "Phil", age: 55)
                 ]
             )
         ]
@@ -225,7 +224,7 @@ struct ContentView: View {
     var body: some View {
         ArrayStepper(
             sections: $sections,
-            display: { "\($0.name): \($0.age ?? 0)" },
+            display: { "\($0.name): \($0.age)" },
             label: "Person"
         )
     }
